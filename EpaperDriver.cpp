@@ -47,11 +47,15 @@ Status EpaperDriver::powerInit() {
 	SPI.setDataMode(SPI_MODE0);
 	SPI.setClockDivider(SPI_CLOCK_DIV2);
 	
-	if (spiGetId() != 0x12)  // G1 COG driver ID is 0x11, G2 is 0x12
+	if (spiGetId() != 0x12) {  // G1 COG driver ID is 0x11, G2 is 0x12
+		powerOff();
 		return Status::INVALID_CHIP_ID;
+	}
 	spiWrite(0x02, 0x40);  // Disable OE
-	if ((spiRead(0x0F) & 0x80) == 0)
+	if ((spiRead(0x0F) & 0x80) == 0) {
+		powerOff();
 		return Status::BROKEN_PANEL;
+	}
 	spiWrite(0x0B, 0x02);  // Power saving mode
 	
 	// Channel select
@@ -88,7 +92,29 @@ Status EpaperDriver::powerInit() {
 			return Status::OK;
 		}
 	}
+	powerOff();
 	return Status::DC_FAIL;
+}
+
+
+void EpaperDriver::powerOff() {
+	spiWrite(0x0B, 0x00);  // Undocumented
+	spiWrite(0x03, 0x01);  // Latch reset turn on
+	spiWrite(0x05, 0x03);  // Power off charge pump, Vcom off
+	spiWrite(0x05, 0x01);  // Power off charge pump negative voltage, VGL & VDL off
+	spiWrite(0x04, 0x80);  // Discharge internal
+	spiWrite(0x05, 0x00);  // Power off charge pump positive voltage, VGH & VDH off
+	spiWrite(0x07, 0x01);  // Turn off osc
+	delay(50);
+	
+	SPI.end();
+	digitalWrite(borderControlPin, LOW);
+	delay(10);
+	digitalWrite(resetPin, LOW);
+	digitalWrite(chipSelectPin, LOW);
+	digitalWrite(dischargePin, HIGH);
+	delay(150);
+	digitalWrite(dischargePin, LOW);
 }
 
 

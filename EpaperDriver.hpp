@@ -43,6 +43,10 @@ class EpaperDriver final {
 	private: Status powerInit();
 	
 	
+	// Powers off the G2 COG driver.
+	private: void powerOff();
+	
+	
 	
 	/*---- SPI methods ----*/
 	
