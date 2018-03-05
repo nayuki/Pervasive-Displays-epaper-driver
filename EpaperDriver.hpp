@@ -10,10 +10,30 @@
 
 class EpaperDriver final {
 	
+	/*---- Helper enum ----*/
+	
+	public: enum class Status {
+		OK,
+		INVALID_PIN_CONFIG,
+	};
+	
+	
+	
 	/*---- Fields ----*/
 	
 	// Pin configuration
-	public: int chipSelectPin = -1;
+	public: int chipSelectPin    = -1;
+	public: int resetPin         = -1;
+	public: int busyPin          = -1;
+	public: int borderControlPin = -1;
+	public: int dischargePin     = -1;
+	
+	
+	
+	/*---- Power methods ----*/
+	
+	// Powers on the G2 COG driver.
+	private: Status powerOn();
 	
 	
 	

@@ -10,6 +10,31 @@
 #include "EpaperDriver.hpp"
 
 using std::uint8_t;
+using Status = EpaperDriver::Status;
+
+
+Status EpaperDriver::powerOn() {
+	if (chipSelectPin == -1 ||
+			resetPin == -1 ||
+			busyPin == -1 ||
+			borderControlPin == -1 ||
+			dischargePin == -1)
+		return Status::INVALID_PIN_CONFIG;
+	
+	pinMode(chipSelectPin   , OUTPUT);
+	pinMode(resetPin        , OUTPUT);
+	pinMode(busyPin         , INPUT);
+	pinMode(borderControlPin, OUTPUT);
+	pinMode(dischargePin    , OUTPUT);
+	digitalWrite(chipSelectPin   , HIGH);
+	digitalWrite(borderControlPin, HIGH);
+	digitalWrite(resetPin        , HIGH);
+	digitalWrite(dischargePin    , LOW);
+	delay(5);
+	digitalWrite(resetPin, LOW);
+	delay(5);
+	return Status::OK;
+}
 
 
 void EpaperDriver::spiWrite(uint8_t cmdIndex, uint8_t cmdData) {
