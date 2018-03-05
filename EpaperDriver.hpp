@@ -15,6 +15,9 @@ class EpaperDriver final {
 	public: enum class Status {
 		OK,
 		INVALID_PIN_CONFIG,
+		INVALID_CHIP_ID,
+		BROKEN_PANEL,
+		DC_FAIL,
 	};
 	
 	
@@ -34,6 +37,10 @@ class EpaperDriver final {
 	
 	// Powers on the G2 COG driver.
 	private: Status powerOn();
+	
+	
+	// Initializes the G2 COG driver.
+	private: Status powerInit();
 	
 	
 	
