@@ -10,7 +10,85 @@
 #include "EpaperDriver.hpp"
 
 using std::uint8_t;
+using std::uint32_t;
 using Status = EpaperDriver::Status;
+
+
+void EpaperDriver::drawImage(const uint8_t pixels[]) {
+	static const uint8_t whiteLine[33] = {};
+	for (int i = 0; i < 176; i++)  // Stage 1: Compensate
+		drawLine(i, whiteLine, 3, 2);
+	for (int i = 0; i < 176; i++)  // Stage 2: White
+		drawLine(i, whiteLine, 2, 0);
+	
+	for (int i = 0; i < 176; i++)  // Stage 3: Inverse
+		drawLine(i, &pixels[i * (264 / 8)], 3, 0);
+	for (int i = 0; i < 176; i++)  // Stage 4: Normal
+		drawLine(i, &pixels[i * (264 / 8)], 2, 3);
+	
+	for (int i = 0; i < 176; i++)  // Nothing frame
+		drawLine(i, whiteLine, 0, 0);
+}
+
+
+void EpaperDriver::drawLine(int row, const uint8_t pixels[], uint32_t mapWhiteTo, uint32_t mapBlackTo) {
+	if (!isOn)
+		return;
+	spiRawPair(0x70, 0x0A);
+	digitalWrite(chipSelectPin, LOW);
+	SPI.transfer(0x72);
+	SPI.transfer(0x00);
+	
+	// 'mapping' is a 3-bit to 4-bit look-up table. It has 8 entries of 4 bits each, thus it is 32 bits wide.
+	// 'input' is any integer value, but only bits 0 and 2 are examined (i.e. masked with 0b101).
+	// The 4-bit aligned block in mapping that is returned depends on the value of (input & 5).
+	// If (input & 5) == 0b000, then bits 0 to 3 (inclusive) in mapping are returned.
+	// If (input & 5) == 0b001, then bits 4 to 7 (inclusive) in mapping are returned.
+	// If (input & 5) == 0b100, then bits 16 to 19 (inclusive) in mapping are returned.
+	// If (input & 5) == 0b101, then bits 20 to 23 (inclusive) in mapping are returned.
+	// The other 16 bits in mapping have no effect on the output, regardless of the input value.
+	#define DO_MAP(mapping, input) \
+		(((mapping) >> (((input) & 5) << 2)) & 0xF)
+	
+	// Send even pixels
+	uint32_t evenMap =
+		(mapWhiteTo << 2 | mapWhiteTo) <<  0 |
+		(mapWhiteTo << 2 | mapBlackTo) <<  4 |
+		(mapBlackTo << 2 | mapWhiteTo) << 16 |
+		(mapBlackTo << 2 | mapBlackTo) << 20;
+	for (int i = 264 / 8 - 1; i >= 0; i--) {
+		uint8_t p = pixels[i];
+		uint8_t b = static_cast<uint8_t>(
+			(DO_MAP(evenMap, p >> 4) << 4) |
+			(DO_MAP(evenMap, p >> 0) << 0));
+		SPI.transfer(b);
+	}
+	
+	// Send the scan bytes
+	for (int i = 176 / 4 - 1; i >= 0; i--) {
+		if (i == row / 4)
+			SPI.transfer(3 << (row % 4 * 2));
+		else
+			SPI.transfer(0x00);
+	}
+	
+	// Send odd pixels
+	uint32_t oddMap =
+		(mapWhiteTo << 2 | mapWhiteTo) <<  0 |
+		(mapWhiteTo << 2 | mapBlackTo) << 16 |
+		(mapBlackTo << 2 | mapWhiteTo) <<  4 |
+		(mapBlackTo << 2 | mapBlackTo) << 20;
+	for (int i = 0; i < 264 / 8; i++) {
+		uint8_t p = pixels[i];
+		uint8_t b = static_cast<uint8_t>(
+			(DO_MAP(oddMap, p >> 5) << 0) |
+			(DO_MAP(oddMap, p >> 1) << 4));
+		SPI.transfer(b);
+	}
+	
+	digitalWrite(chipSelectPin, HIGH);
+	spiWrite(0x02, 0x07);  // Turn on OE: output data from COG driver to panel
+}
 
 
 Status EpaperDriver::powerOn() {

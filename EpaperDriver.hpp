@@ -37,6 +37,15 @@ class EpaperDriver final {
 	
 	
 	
+	/*---- Drawing methods ----*/
+	
+	public: void drawImage(const std::uint8_t pixels[]);
+	
+	
+	private: void drawLine(int row, const std::uint8_t pixels[], std::uint32_t mapWhiteTo, std::uint32_t mapBlackTo);
+	
+	
+	
 	/*---- Power methods ----*/
 	
 	// Powers on the G2 COG driver.
