@@ -14,6 +14,13 @@ using std::uint32_t;
 using Status = EpaperDriver::Status;
 
 
+#ifdef __MSP432P401R__
+	#define __MSP432P401R__ true
+#else
+	#define __MSP432P401R__ false
+#endif
+
+
 void EpaperDriver::drawImage(const uint8_t pixels[]) {
 	static const uint8_t whiteLine[33] = {};
 	for (int i = 0; i < 176; i++)  // Stage 1: Compensate
@@ -130,7 +137,10 @@ Status EpaperDriver::powerInit() {
 	// Configure and start SPI
 	SPI.begin();
 	SPI.setBitOrder(MSBFIRST);
-	SPI.setDataMode(SPI_MODE0);
+	if (__MSP432P401R__)
+		SPI.setDataMode(SPI_MODE1);
+	else
+		SPI.setDataMode(SPI_MODE0);
 	SPI.setClockDivider(SPI_CLOCK_DIV2);
 	
 	if (spiGetId() != 0x12) {  // G1 COG driver ID is 0x11, G2 is 0x12
