@@ -36,6 +36,8 @@ Status EpaperDriver::powerOn() {
 	delay(5);
 	digitalWrite(resetPin, LOW);
 	delay(5);
+	digitalWrite(resetPin, HIGH);
+	delay(5);
 	return powerInit();
 }
 
