@@ -53,6 +53,9 @@ class EpaperDriver final {
 	public: void changeImage(const std::uint8_t pixels[]);
 	
 	
+	public: void changeImage(const std::uint8_t prevPix[], const std::uint8_t pixels[]);
+	
+	
 	private: void drawLine(int row, const std::uint8_t pixels[], std::uint32_t mapWhiteTo, std::uint32_t mapBlackTo);
 	
 	

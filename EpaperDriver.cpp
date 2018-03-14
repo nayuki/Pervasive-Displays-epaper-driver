@@ -31,13 +31,20 @@ EpaperDriver::EpaperDriver(uint8_t prevPix[]) :
 
 
 void EpaperDriver::changeImage(const uint8_t pixels[]) {
-	if (previousPixels == nullptr)
+	changeImage(nullptr, pixels);
+}
+
+
+void EpaperDriver::changeImage(const uint8_t prevPix[], const uint8_t pixels[]) {
+	if (prevPix == nullptr)
+		prevPix = previousPixels;
+	if (prevPix == nullptr)
 		return;
 	
 	for (int i = 0; i < 176; i++)  // Stage 1: Compensate
-		drawLine(i, &previousPixels[i * (264 / 8)], 3, 2);
+		drawLine(i, &prevPix[i * (264 / 8)], 3, 2);
 	for (int i = 0; i < 176; i++)  // Stage 2: White
-		drawLine(i, &previousPixels[i * (264 / 8)], 2, 0);
+		drawLine(i, &prevPix[i * (264 / 8)], 2, 0);
 	
 	for (int i = 0; i < 176; i++)  // Stage 3: Inverse
 		drawLine(i, &pixels[i * (264 / 8)], 3, 0);
@@ -47,7 +54,8 @@ void EpaperDriver::changeImage(const uint8_t pixels[]) {
 	for (int i = 0; i < 176; i++)  // Nothing frame
 		drawLine(i, previousPixels, 0, 0);
 	
-	std::memcpy(previousPixels, pixels, (264 * 176 / 8) * sizeof(pixels[0]));
+	if (previousPixels != nullptr)
+		std::memcpy(previousPixels, pixels, (264 * 176 / 8) * sizeof(pixels[0]));
 }
 
 
