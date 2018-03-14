@@ -93,14 +93,15 @@ void EpaperDriver::drawLine(int row, const uint8_t pixels[], uint32_t mapWhiteTo
 		SPI.transfer(b);
 	}
 	
+	#undef DO_MAP
 	digitalWrite(chipSelectPin, HIGH);
 	spiWrite(0x02, 0x07);  // Turn on OE: output data from COG driver to panel
 }
 
 
 Status EpaperDriver::powerOn() {
-	if (chipSelectPin == -1 ||
-			panelOnPin == -1 ||
+	if (panelOnPin == -1 ||
+			chipSelectPin == -1 ||
 			resetPin == -1 ||
 			busyPin == -1 ||
 			borderControlPin == -1 ||

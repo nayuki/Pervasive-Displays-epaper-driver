@@ -14,7 +14,7 @@
 using std::uint8_t;
 
 
-EpaperDriver epd;
+static EpaperDriver epd;
 
 void setup() {
 	// Configure pins for the "Texas Instruments SimpleLink

@@ -14,11 +14,11 @@ class EpaperDriver final {
 	
 	public: enum class Status {
 		OK,
+		ALREADY_ON,
 		INVALID_PIN_CONFIG,
 		INVALID_CHIP_ID,
 		BROKEN_PANEL,
 		DC_FAIL,
-		ALREADY_ON,
 	};
 	
 	
