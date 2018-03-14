@@ -15,6 +15,7 @@ using Status = EpaperDriver::Status;
 
 Status EpaperDriver::powerOn() {
 	if (chipSelectPin == -1 ||
+			panelOnPin == -1 ||
 			resetPin == -1 ||
 			busyPin == -1 ||
 			borderControlPin == -1 ||
@@ -24,11 +25,13 @@ Status EpaperDriver::powerOn() {
 		return Status::ALREADY_ON;
 	isOn = true;
 	
+	pinMode(panelOnPin      , OUTPUT);
 	pinMode(chipSelectPin   , OUTPUT);
 	pinMode(resetPin        , OUTPUT);
 	pinMode(busyPin         , INPUT);
 	pinMode(borderControlPin, OUTPUT);
 	pinMode(dischargePin    , OUTPUT);
+	digitalWrite(panelOnPin      , HIGH);
 	digitalWrite(chipSelectPin   , HIGH);
 	digitalWrite(borderControlPin, HIGH);
 	digitalWrite(resetPin        , HIGH);
@@ -124,6 +127,7 @@ void EpaperDriver::powerOff() {
 	digitalWrite(dischargePin, HIGH);
 	delay(150);
 	digitalWrite(dischargePin, LOW);
+	digitalWrite(panelOnPin, LOW);
 }
 
 

@@ -26,6 +26,7 @@ class EpaperDriver final {
 	/*---- Fields ----*/
 	
 	// Pin configuration
+	public: int panelOnPin       = -1;
 	public: int chipSelectPin    = -1;
 	public: int resetPin         = -1;
 	public: int busyPin          = -1;
