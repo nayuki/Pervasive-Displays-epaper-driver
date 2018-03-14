@@ -18,6 +18,7 @@ class EpaperDriver final {
 		INVALID_CHIP_ID,
 		BROKEN_PANEL,
 		DC_FAIL,
+		ALREADY_ON,
 	};
 	
 	
@@ -30,6 +31,8 @@ class EpaperDriver final {
 	public: int busyPin          = -1;
 	public: int borderControlPin = -1;
 	public: int dischargePin     = -1;
+	
+	private: bool isOn = false;
 	
 	
 	

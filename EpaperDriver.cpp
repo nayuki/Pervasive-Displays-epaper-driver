@@ -20,6 +20,9 @@ Status EpaperDriver::powerOn() {
 			borderControlPin == -1 ||
 			dischargePin == -1)
 		return Status::INVALID_PIN_CONFIG;
+	if (isOn)
+		return Status::ALREADY_ON;
+	isOn = true;
 	
 	pinMode(chipSelectPin   , OUTPUT);
 	pinMode(resetPin        , OUTPUT);
@@ -98,6 +101,10 @@ Status EpaperDriver::powerInit() {
 
 
 void EpaperDriver::powerOff() {
+	if (!isOn)
+		return;
+	isOn = false;
+	
 	spiWrite(0x0B, 0x00);  // Undocumented
 	spiWrite(0x03, 0x01);  // Latch reset turn on
 	spiWrite(0x05, 0x03);  // Power off charge pump, Vcom off
