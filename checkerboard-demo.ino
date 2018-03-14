@@ -14,6 +14,7 @@
 using std::uint8_t;
 
 
+static uint8_t prevImage[264 * 176 / 8] = {};
 static EpaperDriver epd;
 
 void setup() {
@@ -26,6 +27,7 @@ void setup() {
 	epd.busyPin = 8;
 	epd.chipSelectPin = 19;
 	
+	epd.previousPixels = prevImage;
 	Serial.begin(9600);
 	delay(1000);
 }
@@ -50,7 +52,7 @@ void loop() {
 	
 	// Draw image to screen
 	epd.powerOn();
-	epd.drawImage(image);
+	epd.changeImage(image);
 	epd.powerOff();
 	delay(3000);
 	

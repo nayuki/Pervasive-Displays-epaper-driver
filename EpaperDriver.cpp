@@ -5,6 +5,7 @@
  * https://www.nayuki.io/
  */
 
+#include <cstring>
 #include <Arduino.h>
 #include <SPI.h>
 #include "EpaperDriver.hpp"
@@ -21,12 +22,14 @@ using Status = EpaperDriver::Status;
 #endif
 
 
-void EpaperDriver::drawImage(const uint8_t pixels[]) {
-	static const uint8_t whiteLine[33] = {};
+void EpaperDriver::changeImage(const uint8_t pixels[]) {
+	if (previousPixels == nullptr)
+		return;
+	
 	for (int i = 0; i < 176; i++)  // Stage 1: Compensate
-		drawLine(i, whiteLine, 3, 2);
+		drawLine(i, &previousPixels[i * (264 / 8)], 3, 2);
 	for (int i = 0; i < 176; i++)  // Stage 2: White
-		drawLine(i, whiteLine, 2, 0);
+		drawLine(i, &previousPixels[i * (264 / 8)], 2, 0);
 	
 	for (int i = 0; i < 176; i++)  // Stage 3: Inverse
 		drawLine(i, &pixels[i * (264 / 8)], 3, 0);
@@ -34,7 +37,9 @@ void EpaperDriver::drawImage(const uint8_t pixels[]) {
 		drawLine(i, &pixels[i * (264 / 8)], 2, 3);
 	
 	for (int i = 0; i < 176; i++)  // Nothing frame
-		drawLine(i, whiteLine, 0, 0);
+		drawLine(i, previousPixels, 0, 0);
+	
+	std::memcpy(previousPixels, pixels, (264 * 176 / 8) * sizeof(pixels[0]));
 }
 
 
