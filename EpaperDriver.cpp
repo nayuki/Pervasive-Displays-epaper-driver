@@ -22,6 +22,14 @@ using Status = EpaperDriver::Status;
 #endif
 
 
+EpaperDriver::EpaperDriver() :
+	EpaperDriver(nullptr) {}
+
+
+EpaperDriver::EpaperDriver(uint8_t prevPix[]) :
+	previousPixels(prevPix) {}
+
+
 void EpaperDriver::changeImage(const uint8_t pixels[]) {
 	if (previousPixels == nullptr)
 		return;

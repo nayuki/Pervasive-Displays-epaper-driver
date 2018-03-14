@@ -15,7 +15,7 @@ using std::uint8_t;
 
 
 static uint8_t prevImage[264 * 176 / 8] = {};
-static EpaperDriver epd;
+static EpaperDriver epd(prevImage);
 
 void setup() {
 	// Configure pins for the "Texas Instruments SimpleLink
@@ -27,7 +27,6 @@ void setup() {
 	epd.busyPin = 8;
 	epd.chipSelectPin = 19;
 	
-	epd.previousPixels = prevImage;
 	Serial.begin(9600);
 	delay(1000);
 }

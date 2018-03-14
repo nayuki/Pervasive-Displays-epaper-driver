@@ -39,6 +39,15 @@ class EpaperDriver final {
 	
 	
 	
+	/*---- Constructors ----*/
+	
+	public: EpaperDriver();
+	
+	
+	public: EpaperDriver(std::uint8_t prevPix[]);
+	
+	
+	
 	/*---- Drawing methods ----*/
 	
 	public: void changeImage(const std::uint8_t pixels[]);
