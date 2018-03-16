@@ -104,18 +104,19 @@ void EpaperDriver::drawFrame(const uint8_t pixels[],
 		uint32_t mapWhiteTo, uint32_t mapBlackTo, int iterations) {
 	for (int i = 0; i < iterations; i++) {
 		for (int y = 0; y < 176; y++)
-			drawLine(y, &pixels[y * (264 / 8)], mapWhiteTo, mapBlackTo);
+			drawLine(y, &pixels[y * (264 / 8)], mapWhiteTo, mapBlackTo, 0x00);
 	}
 }
 
 
-void EpaperDriver::drawLine(int row, const uint8_t pixels[], uint32_t mapWhiteTo, uint32_t mapBlackTo) {
+void EpaperDriver::drawLine(int row, const uint8_t pixels[], uint32_t mapWhiteTo, uint32_t mapBlackTo, uint8_t border) {
 	if (!isOn)
 		return;
 	spiRawPair(0x70, 0x0A);
 	digitalWrite(chipSelectPin, LOW);
 	SPI.transfer(0x72);
-	SPI.transfer(0x00);
+	if (size == Size::EPD_2_00_INCH || size == Size::EPD_2_71_INCH)
+		SPI.transfer(border);
 	
 	// 'mapping' is a 3-bit to 4-bit look-up table. It has 8 entries of 4 bits each, thus it is 32 bits wide.
 	// 'input' is any integer value, but only bits 0 and 2 are examined (i.e. masked with 0b101).
@@ -165,6 +166,8 @@ void EpaperDriver::drawLine(int row, const uint8_t pixels[], uint32_t mapWhiteTo
 	}
 	
 	#undef DO_MAP
+	if (size == Size::EPD_1_44_INCH)
+		SPI.transfer(border);
 	digitalWrite(chipSelectPin, HIGH);
 	spiWrite(0x02, 0x07);  // Turn on OE: output data from COG driver to panel
 }
@@ -315,9 +318,11 @@ Status EpaperDriver::powerInit() {
 void EpaperDriver::powerFinish() {
 	uint8_t whiteLine[264 / 8] = {};
 	for (int i = 0; i < 176; i++)  // Nothing frame
-		drawLine(i, whiteLine, 0, 0);
+		drawLine(i, whiteLine, 0, 0, 0x00);
 	
-	if (size == Size::EPD_2_71_INCH) {
+	if (size == Size::EPD_1_44_INCH || size == Size::EPD_2_00_INCH)
+		drawLine(-4, whiteLine, 0, 0, 0xAA);  // Border dummy line
+	else if (size == Size::EPD_2_71_INCH) {
 		drawLine(-4, whiteLine, 0, 0, 0x00);  // Dummy line
 		// Pulse the border pin
 		delay(25);
