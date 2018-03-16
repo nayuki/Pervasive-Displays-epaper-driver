@@ -27,6 +27,7 @@ void setup() {
 	epd.busyPin = 8;
 	epd.chipSelectPin = 19;
 	
+	epd.setFrameTime(300);
 	Serial.begin(9600);
 	delay(1000);
 }
