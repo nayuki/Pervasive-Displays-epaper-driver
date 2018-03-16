@@ -297,13 +297,13 @@ void EpaperDriver::powerOff() {
 	delay(50);
 	
 	digitalWrite(borderControlPin, LOW);
+	digitalWrite(panelOnPin, LOW);
 	delay(10);
 	digitalWrite(resetPin, LOW);
 	digitalWrite(chipSelectPin, LOW);
 	digitalWrite(dischargePin, HIGH);
 	delay(150);
 	digitalWrite(dischargePin, LOW);
-	digitalWrite(panelOnPin, LOW);
 }
 
 
