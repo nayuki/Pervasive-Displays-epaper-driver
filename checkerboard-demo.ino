@@ -50,9 +50,7 @@ void loop() {
 	}
 	
 	// Draw image to screen
-	epd.powerOn();
 	epd.changeImage(image);
-	epd.powerOff();
 	delay(3000);
 	
 	// Change parameters for next iteration

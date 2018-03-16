@@ -130,7 +130,7 @@ class EpaperDriver final {
 	/*---- Power methods ----*/
 	
 	// Powers on the G2 COG driver.
-	public: Status powerOn();
+	private: Status powerOn();
 	
 	
 	// Initializes the G2 COG driver.
@@ -142,7 +142,7 @@ class EpaperDriver final {
 	
 	
 	// Powers off the G2 COG driver.
-	public: void powerOff();
+	private: void powerOff();
 	
 	
 	

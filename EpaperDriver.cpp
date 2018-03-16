@@ -70,6 +70,7 @@ void EpaperDriver::changeImage(const uint8_t prevPix[], const uint8_t pixels[]) 
 		prevPix = previousPixels;
 	if (prevPix == nullptr)
 		return;
+	powerOn();
 	
 	// Stage 1: Compensate
 	int iters;
@@ -93,6 +94,7 @@ void EpaperDriver::changeImage(const uint8_t prevPix[], const uint8_t pixels[]) 
 	
 	if (previousPixels != nullptr)
 		std::memcpy(previousPixels, pixels, (264 * 176 / 8) * sizeof(pixels[0]));
+	powerOff();
 }
 
 
