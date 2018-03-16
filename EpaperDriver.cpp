@@ -133,8 +133,8 @@ void EpaperDriver::drawLine(int row, const uint8_t pixels[], uint32_t mapWhiteTo
 		(mapWhiteTo << 2 | mapBlackTo) <<  4 |
 		(mapBlackTo << 2 | mapWhiteTo) << 16 |
 		(mapBlackTo << 2 | mapBlackTo) << 20;
-	for (int i = 264 / 8 - 1; i >= 0; i--) {
-		uint8_t p = pixels[i];
+	for (int x = 264 / 8 - 1; x >= 0; x--) {
+		uint8_t p = pixels[x];
 		uint8_t b = static_cast<uint8_t>(
 			(DO_MAP(evenMap, p >> 4) << 4) |
 			(DO_MAP(evenMap, p >> 0) << 0));
@@ -142,8 +142,8 @@ void EpaperDriver::drawLine(int row, const uint8_t pixels[], uint32_t mapWhiteTo
 	}
 	
 	// Send the scan bytes
-	for (int i = 176 / 4 - 1; i >= 0; i--) {
-		if (i == row / 4)
+	for (int y = 176 / 4 - 1; y >= 0; y--) {
+		if (y == row / 4)
 			SPI.transfer(3 << (row % 4 * 2));
 		else
 			SPI.transfer(0x00);
@@ -155,8 +155,8 @@ void EpaperDriver::drawLine(int row, const uint8_t pixels[], uint32_t mapWhiteTo
 		(mapWhiteTo << 2 | mapBlackTo) << 16 |
 		(mapBlackTo << 2 | mapWhiteTo) <<  4 |
 		(mapBlackTo << 2 | mapBlackTo) << 20;
-	for (int i = 0; i < 264 / 8; i++) {
-		uint8_t p = pixels[i];
+	for (int x = 0; x < 264 / 8; x++) {
+		uint8_t p = pixels[x];
 		uint8_t b = static_cast<uint8_t>(
 			(DO_MAP(oddMap, p >> 5) << 0) |
 			(DO_MAP(oddMap, p >> 1) << 4));
