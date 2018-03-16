@@ -56,15 +56,11 @@ class EpaperDriver final {
 	
 	
 	
-	/*---- Constructors ----*/
-	
-	// Creates a driver with the previous image array set to null.
-	public: EpaperDriver();
-	
+	/*---- Constructor ----*/
 	
 	// Creates a driver with the given previous image array (can be null).
 	// This constructor doesn't perform any I/O or modify hardware configuration.
-	public: EpaperDriver(std::uint8_t prevPix[]);
+	public: EpaperDriver(std::uint8_t prevPix[] = nullptr);
 	
 	
 	

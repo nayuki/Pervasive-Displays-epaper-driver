@@ -23,11 +23,7 @@ using Status = EpaperDriver::Status;
 
 
 
-/*---- Constructors ----*/
-
-EpaperDriver::EpaperDriver() :
-	EpaperDriver(nullptr) {}
-
+/*---- Constructor ----*/
 
 EpaperDriver::EpaperDriver(uint8_t prevPix[]) :
 	previousPixels(prevPix) {}
