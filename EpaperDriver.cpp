@@ -51,9 +51,6 @@ void EpaperDriver::changeImage(const uint8_t prevPix[], const uint8_t pixels[]) 
 	for (int i = 0; i < 176; i++)  // Stage 4: Normal
 		drawLine(i, &pixels[i * (264 / 8)], 2, 3);
 	
-	for (int i = 0; i < 176; i++)  // Nothing frame
-		drawLine(i, previousPixels, 0, 0);
-	
 	if (previousPixels != nullptr)
 		std::memcpy(previousPixels, pixels, (264 * 176 / 8) * sizeof(pixels[0]));
 }
@@ -215,10 +212,24 @@ Status EpaperDriver::powerInit() {
 }
 
 
+void EpaperDriver::powerFinish() {
+	uint8_t whiteLine[264 / 8] = {};
+	for (int i = 0; i < 176; i++)  // Nothing frame
+		drawLine(i, whiteLine, 0, 0);
+	drawLine(-4, whiteLine, 0, 0);  // Dummy line
+	
+	delay(25);
+	digitalWrite(borderControlPin, LOW);
+	delay(100);
+	digitalWrite(borderControlPin, HIGH);
+}
+
+
 void EpaperDriver::powerOff() {
 	if (!isOn)
 		return;
 	isOn = false;
+	powerFinish();
 	
 	spiWrite(0x0B, 0x00);  // Undocumented
 	spiWrite(0x03, 0x01);  // Latch reset turn on

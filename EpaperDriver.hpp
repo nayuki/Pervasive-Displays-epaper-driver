@@ -70,6 +70,10 @@ class EpaperDriver final {
 	private: Status powerInit();
 	
 	
+	// Writes a nothing frame and dummy line.
+	private: void powerFinish();
+	
+	
 	// Powers off the G2 COG driver.
 	public: void powerOff();
 	
