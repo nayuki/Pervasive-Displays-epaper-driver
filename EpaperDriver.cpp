@@ -1,5 +1,5 @@
 /* 
- * Hardware driver for Pervasive Displays' e-paper displays
+ * Hardware driver for Pervasive Displays' e-paper panels
  * 
  * Copyright (c) Project Nayuki
  * https://www.nayuki.io/
@@ -100,7 +100,8 @@ void EpaperDriver::changeImage(const uint8_t prevPix[], const uint8_t pixels[]) 
 }
 
 
-void EpaperDriver::drawFrame(const uint8_t pixels[], uint32_t mapWhiteTo, uint32_t mapBlackTo, int iterations) {
+void EpaperDriver::drawFrame(const uint8_t pixels[],
+		uint32_t mapWhiteTo, uint32_t mapBlackTo, int iterations) {
 	for (int i = 0; i < iterations; i++) {
 		for (int y = 0; y < 176; y++)
 			drawLine(y, &pixels[y * (264 / 8)], mapWhiteTo, mapBlackTo);
@@ -173,6 +174,7 @@ void EpaperDriver::drawLine(int row, const uint8_t pixels[], uint32_t mapWhiteTo
 /*---- Power methods ----*/
 
 Status EpaperDriver::powerOn() {
+	// Check arguments and state
 	if (panelOnPin == -1 ||
 			chipSelectPin == -1 ||
 			resetPin == -1 ||
@@ -184,18 +186,23 @@ Status EpaperDriver::powerOn() {
 		return Status::ALREADY_ON;
 	isOn = true;
 	
+	// Set I/O pin directions
 	pinMode(panelOnPin      , OUTPUT);
 	pinMode(chipSelectPin   , OUTPUT);
 	pinMode(resetPin        , OUTPUT);
 	pinMode(busyPin         , INPUT);
 	pinMode(borderControlPin, OUTPUT);
 	pinMode(dischargePin    , OUTPUT);
+	
+	// Set initial pin values
 	digitalWrite(panelOnPin      , HIGH);
 	digitalWrite(chipSelectPin   , HIGH);
 	digitalWrite(borderControlPin, HIGH);
 	digitalWrite(resetPin        , HIGH);
 	digitalWrite(dischargePin    , LOW);
 	delay(5);
+	
+	// Pulse the reset pin
 	digitalWrite(resetPin, LOW);
 	delay(5);
 	digitalWrite(resetPin, HIGH);
@@ -205,7 +212,8 @@ Status EpaperDriver::powerOn() {
 
 
 Status EpaperDriver::powerInit() {
-	while (digitalRead(busyPin) == HIGH)  // Wait until idle
+	// Wait until idle
+	while (digitalRead(busyPin) == HIGH)
 		delay(1);
 	
 	// Configure and start SPI
@@ -217,10 +225,12 @@ Status EpaperDriver::powerInit() {
 	else
 		SPI.setDataMode(SPI_MODE0);
 	
-	if (spiGetId() != 0x12) {  // G1 COG driver ID is 0x11, G2 is 0x12
+	// Check chip ID. G1 COG driver's ID is 0x11, G2 is 0x12
+	if (spiGetId() != 0x12) {
 		powerOff();
 		return Status::INVALID_CHIP_ID;
 	}
+	
 	spiWrite(0x02, 0x40);  // Disable OE
 	if ((spiRead(0x0F) & 0x80) == 0) {
 		powerOff();
@@ -250,6 +260,7 @@ Status EpaperDriver::powerInit() {
 	spiWrite(0x03, 0x00);  // Driver latch off
 	delay(5);
 	
+	// Give a few attempts to turn on power
 	for (int i = 0; i < 4; i++) {
 		spiWrite(0x05, 0x01);  // Start charge pump positive voltage, VGH & VDH on
 		delay(150);
@@ -273,6 +284,7 @@ void EpaperDriver::powerFinish() {
 		drawLine(i, whiteLine, 0, 0);
 	drawLine(-4, whiteLine, 0, 0);  // Dummy line
 	
+	// Pulse the border pin
 	delay(25);
 	digitalWrite(borderControlPin, LOW);
 	delay(100);
@@ -301,6 +313,8 @@ void EpaperDriver::powerOff() {
 	delay(10);
 	digitalWrite(resetPin, LOW);
 	digitalWrite(chipSelectPin, LOW);
+	
+	// Pulse the discharge pin
 	digitalWrite(dischargePin, HIGH);
 	delay(150);
 	digitalWrite(dischargePin, LOW);
