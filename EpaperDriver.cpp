@@ -95,16 +95,18 @@ void EpaperDriver::changeImage(const uint8_t prevPix[], const uint8_t pixels[]) 
 	drawFrame(pixels , 2, 3, iters);  // Stage 4: Normal
 	
 	if (previousPixels != nullptr)
-		std::memcpy(previousPixels, pixels, (264 * 176 / 8) * sizeof(pixels[0]));
+		std::memcpy(previousPixels, pixels, getBytesPerLine() * getHeight() * sizeof(pixels[0]));
 	powerOff();
 }
 
 
 void EpaperDriver::drawFrame(const uint8_t pixels[],
 		uint32_t mapWhiteTo, uint32_t mapBlackTo, int iterations) {
+	int bytesPerLine = getBytesPerLine();
+	int height = getHeight();
 	for (int i = 0; i < iterations; i++) {
-		for (int y = 0; y < 176; y++)
-			drawLine(y, &pixels[y * (264 / 8)], mapWhiteTo, mapBlackTo, 0x00);
+		for (int y = 0; y < height; y++)
+			drawLine(y, &pixels[y * bytesPerLine], mapWhiteTo, mapBlackTo, 0x00);
 	}
 }
 
@@ -128,6 +130,7 @@ void EpaperDriver::drawLine(int row, const uint8_t pixels[], uint32_t mapWhiteTo
 	// The other 16 bits in mapping have no effect on the output, regardless of the input value.
 	#define DO_MAP(mapping, input) \
 		(((mapping) >> (((input) & 5) << 2)) & 0xF)
+	int bytesPerLine = getBytesPerLine();
 	
 	// Send even pixels
 	uint32_t evenMap =
@@ -135,7 +138,7 @@ void EpaperDriver::drawLine(int row, const uint8_t pixels[], uint32_t mapWhiteTo
 		(mapWhiteTo << 2 | mapBlackTo) <<  4 |
 		(mapBlackTo << 2 | mapWhiteTo) << 16 |
 		(mapBlackTo << 2 | mapBlackTo) << 20;
-	for (int x = 264 / 8 - 1; x >= 0; x--) {
+	for (int x = bytesPerLine - 1; x >= 0; x--) {
 		uint8_t p = pixels[x];
 		uint8_t b = static_cast<uint8_t>(
 			(DO_MAP(evenMap, p >> 4) << 4) |
@@ -144,7 +147,7 @@ void EpaperDriver::drawLine(int row, const uint8_t pixels[], uint32_t mapWhiteTo
 	}
 	
 	// Send the scan bytes
-	for (int y = 176 / 4 - 1; y >= 0; y--) {
+	for (int y = getHeight() / 4 - 1; y >= 0; y--) {
 		if (y == row / 4)
 			SPI.transfer(3 << (row % 4 * 2));
 		else
@@ -157,7 +160,7 @@ void EpaperDriver::drawLine(int row, const uint8_t pixels[], uint32_t mapWhiteTo
 		(mapWhiteTo << 2 | mapBlackTo) << 16 |
 		(mapBlackTo << 2 | mapWhiteTo) <<  4 |
 		(mapBlackTo << 2 | mapBlackTo) << 20;
-	for (int x = 0; x < 264 / 8; x++) {
+	for (int x = 0; x < bytesPerLine; x++) {
 		uint8_t p = pixels[x];
 		uint8_t b = static_cast<uint8_t>(
 			(DO_MAP(oddMap, p >> 5) << 0) |
@@ -316,8 +319,9 @@ Status EpaperDriver::powerInit() {
 
 
 void EpaperDriver::powerFinish() {
-	uint8_t whiteLine[264 / 8] = {};
-	for (int i = 0; i < 176; i++)  // Nothing frame
+	// Array length must be the maximum value of getBytesPerLine() among all sizes
+	uint8_t whiteLine[33] = {};
+	for (int i = 0, height = getHeight(); i < height; i++)  // Nothing frame
 		drawLine(i, whiteLine, 0, 0, 0x00);
 	
 	if (size == Size::EPD_1_44_INCH || size == Size::EPD_2_00_INCH)
