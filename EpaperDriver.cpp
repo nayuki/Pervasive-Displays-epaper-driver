@@ -12,6 +12,7 @@
 
 using std::uint8_t;
 using std::uint32_t;
+using Size = EpaperDriver::Size;
 using Status = EpaperDriver::Status;
 
 
@@ -25,8 +26,9 @@ using Status = EpaperDriver::Status;
 
 /*---- Constructor ----*/
 
-EpaperDriver::EpaperDriver(uint8_t prevPix[]) :
-	previousPixels(prevPix) {}
+EpaperDriver::EpaperDriver(Size sz, uint8_t prevPix[]) :
+	previousPixels(prevPix),
+	size(sz) {}
 
 
 

@@ -14,7 +14,18 @@
  */
 class EpaperDriver final {
 	
-	/*---- Helper enum ----*/
+	/*---- Helper enums ----*/
+	
+	// Different EPD panel sizes, all of the Aurora Mb (V231) film type.
+	public: enum class Size {
+		// Reserve index 0 to avoid accidental use of
+		// uninitialized memory that happens to be zero
+		INVALID = 0,
+		EPD_1_44_INCH,
+		EPD_2_00_INCH,
+		EPD_2_71_INCH,
+	};
+	
 	
 	// Return codes for powerOn().
 	public: enum class Status {
@@ -45,6 +56,9 @@ class EpaperDriver final {
 	// Writable array for reading and writing the previous image. Can be null.
 	public: std::uint8_t *previousPixels = nullptr;
 	
+	// The size of the EPD being driven. Immutable.
+	private: Size size;
+	
 	// False initially, true after a successful powerOn(), false after powerOff().
 	private: bool isOn = false;
 	
@@ -60,7 +74,7 @@ class EpaperDriver final {
 	
 	// Creates a driver with the given previous image array (can be null).
 	// This constructor doesn't perform any I/O or modify hardware configuration.
-	public: EpaperDriver(std::uint8_t prevPix[] = nullptr);
+	public: EpaperDriver(Size sz, std::uint8_t prevPix[] = nullptr);
 	
 	
 	

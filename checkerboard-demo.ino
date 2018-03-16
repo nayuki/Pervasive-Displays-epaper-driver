@@ -15,7 +15,7 @@ using std::uint8_t;
 
 
 static uint8_t prevImage[264 * 176 / 8] = {};
-static EpaperDriver epd(prevImage);
+static EpaperDriver epd(EpaperDriver::Size::EPD_2_71_INCH, prevImage);
 
 void setup() {
 	// Configure pins for the "Texas Instruments SimpleLink
