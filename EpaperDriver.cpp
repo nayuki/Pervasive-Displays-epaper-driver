@@ -272,14 +272,18 @@ Status EpaperDriver::powerInit() {
 	spiRawPair(0x70, 0x01);
 	digitalWrite(chipSelectPin, LOW);
 	SPI.transfer(0x72);
-	SPI.transfer(0x00);
-	SPI.transfer(0x00);
-	SPI.transfer(0x00);
-	SPI.transfer(0x7F);
-	SPI.transfer(0xFF);
-	SPI.transfer(0xFE);
-	SPI.transfer(0x00);
-	SPI.transfer(0x00);
+	static const uint8_t chanSel144[] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x0F, 0xFF, 0x00};
+	static const uint8_t chanSel200[] = {0x00, 0x00, 0x00, 0x00, 0x01, 0xFF, 0xE0, 0x00};
+	static const uint8_t chanSel271[] = {0x00, 0x00, 0x00, 0x7F, 0xFF, 0xFE, 0x00, 0x00};
+	const uint8_t *chanSel;
+	switch (size) {
+		case Size::EPD_1_44_INCH:  chanSel = chanSel144;  break;
+		case Size::EPD_2_00_INCH:  chanSel = chanSel200;  break;
+		case Size::EPD_2_71_INCH:  chanSel = chanSel271;  break;
+		default:  return Status::INVALID_SIZE;
+	}
+	for (int i = 0; i < 8; i++)
+		SPI.transfer(chanSel[i]);
 	digitalWrite(chipSelectPin, HIGH);
 	
 	spiWrite(0x07, 0xD1);  // High power mode osc setting

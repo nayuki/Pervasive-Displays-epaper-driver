@@ -31,6 +31,7 @@ class EpaperDriver final {
 	public: enum class Status {
 		OK,
 		ALREADY_ON,
+		INVALID_SIZE,
 		INVALID_PIN_CONFIG,
 		INVALID_CHIP_ID,
 		BROKEN_PANEL,
