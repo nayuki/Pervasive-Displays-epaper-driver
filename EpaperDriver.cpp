@@ -211,11 +211,11 @@ Status EpaperDriver::powerInit() {
 	// Configure and start SPI
 	SPI.begin();
 	SPI.setBitOrder(MSBFIRST);
+	SPI.setClockDivider(SPI_CLOCK_DIV2);
 	if (__MSP432P401R__)
 		SPI.setDataMode(SPI_MODE1);
 	else
 		SPI.setDataMode(SPI_MODE0);
-	SPI.setClockDivider(SPI_CLOCK_DIV2);
 	
 	if (spiGetId() != 0x12) {  // G1 COG driver ID is 0x11, G2 is 0x12
 		powerOff();
