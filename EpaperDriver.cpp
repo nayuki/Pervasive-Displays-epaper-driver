@@ -238,9 +238,9 @@ void EpaperDriver::powerOff() {
 	spiWrite(0x04, 0x80);  // Discharge internal
 	spiWrite(0x05, 0x00);  // Power off charge pump positive voltage, VGH & VDH off
 	spiWrite(0x07, 0x01);  // Turn off osc
+	SPI.end();
 	delay(50);
 	
-	SPI.end();
 	digitalWrite(borderControlPin, LOW);
 	delay(10);
 	digitalWrite(resetPin, LOW);
