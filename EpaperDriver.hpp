@@ -53,6 +53,18 @@ class EpaperDriver final {
 	
 	
 	
+	/*---- Drawing control methods ----*/
+	
+	public: void setFrameRepeats(int iters);
+	
+	
+	public: void setFrameTime(int millis);
+	
+	
+	public: void setFrameTimeByTemperature(int tmpr);
+	
+	
+	
 	/*---- Drawing methods ----*/
 	
 	public: void changeImage(const std::uint8_t pixels[]);

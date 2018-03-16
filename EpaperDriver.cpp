@@ -30,6 +30,31 @@ EpaperDriver::EpaperDriver(uint8_t prevPix[]) :
 	previousPixels(prevPix) {}
 
 
+void EpaperDriver::setFrameRepeats(int iters) {
+	if (iters > 0)
+		frameRepeat = -iters;
+}
+
+
+void EpaperDriver::setFrameTime(int millis) {
+	if (millis > 0)
+		frameRepeat = millis;
+}
+
+
+void EpaperDriver::setFrameTimeByTemperature(int tmpr) {
+	frameRepeat = 630;
+	if      (tmpr <= -10)  frameRepeat *= 17;
+	else if (tmpr <= - 5)  frameRepeat *= 12;
+	else if (tmpr <=   5)  frameRepeat *=  8;
+	else if (tmpr <=  10)  frameRepeat *=  4;
+	else if (tmpr <=  15)  frameRepeat *=  3;
+	else if (tmpr <=  20)  frameRepeat *=  2;
+	else if (tmpr <=  40)  frameRepeat *=  1;
+	else  frameRepeat = frameRepeat * 7 / 10;
+}
+
+
 void EpaperDriver::changeImage(const uint8_t pixels[]) {
 	changeImage(nullptr, pixels);
 }
