@@ -37,6 +37,11 @@ class EpaperDriver final {
 	
 	private: bool isOn = false;
 	
+	// Positive value indicates the number of milliseconds keep redrawing a frame.
+	// Negative value indicates the number of repetitions to keep redrawing a frame.
+	// Zero is invalid. Default value is a sane setting.
+	private: int frameRepeat = -1;
+	
 	
 	
 	/*---- Constructors ----*/
@@ -54,6 +59,9 @@ class EpaperDriver final {
 	
 	
 	public: void changeImage(const std::uint8_t prevPix[], const std::uint8_t pixels[]);
+	
+	
+	private: void drawFrame(const std::uint8_t pixels[], std::uint32_t mapWhiteTo, std::uint32_t mapBlackTo, int iterations);
 	
 	
 	private: void drawLine(int row, const std::uint8_t pixels[], std::uint32_t mapWhiteTo, std::uint32_t mapBlackTo);

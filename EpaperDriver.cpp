@@ -41,18 +41,36 @@ void EpaperDriver::changeImage(const uint8_t prevPix[], const uint8_t pixels[]) 
 	if (prevPix == nullptr)
 		return;
 	
-	for (int i = 0; i < 176; i++)  // Stage 1: Compensate
-		drawLine(i, &prevPix[i * (264 / 8)], 3, 2);
-	for (int i = 0; i < 176; i++)  // Stage 2: White
-		drawLine(i, &prevPix[i * (264 / 8)], 2, 0);
+	// Stage 1: Compensate
+	int iters;
+	if (frameRepeat < 0) {  // Known number of iterations
+		iters = -frameRepeat;
+		drawFrame(prevPix, 3, 2, iters);
+	} else if (frameRepeat > 0) {
+		// Measure number of iterations needed to spend 'frameRepeat' milliseconds
+		iters = 0;
+		unsigned long startTime = millis();
+		do {
+			drawFrame(prevPix, 3, 2, 1);
+			iters++;
+		} while (millis() - startTime < static_cast<unsigned long>(frameRepeat));
+	} else
+		return;
 	
-	for (int i = 0; i < 176; i++)  // Stage 3: Inverse
-		drawLine(i, &pixels[i * (264 / 8)], 3, 0);
-	for (int i = 0; i < 176; i++)  // Stage 4: Normal
-		drawLine(i, &pixels[i * (264 / 8)], 2, 3);
+	drawFrame(prevPix, 2, 0, iters);  // Stage 2: White
+	drawFrame(pixels , 3, 0, iters);  // Stage 3: Inverse
+	drawFrame(pixels , 2, 3, iters);  // Stage 4: Normal
 	
 	if (previousPixels != nullptr)
 		std::memcpy(previousPixels, pixels, (264 * 176 / 8) * sizeof(pixels[0]));
+}
+
+
+void EpaperDriver::drawFrame(const uint8_t pixels[], uint32_t mapWhiteTo, uint32_t mapBlackTo, int iterations) {
+	for (int i = 0; i < iterations; i++) {
+		for (int y = 0; y < 176; y++)
+			drawLine(y, &pixels[y * (264 / 8)], mapWhiteTo, mapBlackTo);
+	}
 }
 
 
