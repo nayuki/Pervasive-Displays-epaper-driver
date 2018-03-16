@@ -49,7 +49,7 @@ class EpaperDriver final {
 	public: int panelOnPin       = -1;
 	public: int chipSelectPin    = -1;
 	public: int resetPin         = -1;
-	public: int busyPin          = -1;
+	public: int busyPin          = -1;  // Required for size EPD_2_71_INCH, ignored otherwise
 	public: int borderControlPin = -1;
 	public: int dischargePin     = -1;
 	

@@ -207,7 +207,7 @@ Status EpaperDriver::powerOn() {
 			chipSelectPin == -1 ||
 			resetPin == -1 ||
 			busyPin == -1 ||
-			borderControlPin == -1 ||
+			(size == Size::EPD_2_71_INCH && borderControlPin == -1) ||
 			dischargePin == -1)
 		return Status::INVALID_PIN_CONFIG;
 	if (isOn)
@@ -219,13 +219,15 @@ Status EpaperDriver::powerOn() {
 	pinMode(chipSelectPin   , OUTPUT);
 	pinMode(resetPin        , OUTPUT);
 	pinMode(busyPin         , INPUT);
-	pinMode(borderControlPin, OUTPUT);
+	if (size == Size::EPD_2_71_INCH)
+		pinMode(borderControlPin, OUTPUT);
 	pinMode(dischargePin    , OUTPUT);
 	
 	// Set initial pin values
 	digitalWrite(panelOnPin      , HIGH);
 	digitalWrite(chipSelectPin   , HIGH);
-	digitalWrite(borderControlPin, HIGH);
+	if (size == Size::EPD_2_71_INCH)
+		digitalWrite(borderControlPin, HIGH);
 	digitalWrite(resetPin        , HIGH);
 	digitalWrite(dischargePin    , LOW);
 	delay(5);
@@ -310,13 +312,15 @@ void EpaperDriver::powerFinish() {
 	uint8_t whiteLine[264 / 8] = {};
 	for (int i = 0; i < 176; i++)  // Nothing frame
 		drawLine(i, whiteLine, 0, 0);
-	drawLine(-4, whiteLine, 0, 0);  // Dummy line
 	
-	// Pulse the border pin
-	delay(25);
-	digitalWrite(borderControlPin, LOW);
-	delay(100);
-	digitalWrite(borderControlPin, HIGH);
+	if (size == Size::EPD_2_71_INCH) {
+		drawLine(-4, whiteLine, 0, 0, 0x00);  // Dummy line
+		// Pulse the border pin
+		delay(25);
+		digitalWrite(borderControlPin, LOW);
+		delay(100);
+		digitalWrite(borderControlPin, HIGH);
+	}
 }
 
 
@@ -337,7 +341,8 @@ void EpaperDriver::powerOff() {
 	SPI.end();
 	delay(50);
 	
-	digitalWrite(borderControlPin, LOW);
+	if (size == Size::EPD_2_71_INCH)
+		digitalWrite(borderControlPin, LOW);
 	digitalWrite(panelOnPin, LOW);
 	delay(10);
 	digitalWrite(resetPin, LOW);
