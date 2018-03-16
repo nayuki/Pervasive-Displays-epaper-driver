@@ -171,6 +171,34 @@ void EpaperDriver::drawLine(int row, const uint8_t pixels[], uint32_t mapWhiteTo
 
 
 
+/*---- Image dimension methods ----*/
+
+int EpaperDriver::getWidth() const {
+	switch (size) {
+		case Size::EPD_1_44_INCH:  return 128;
+		case Size::EPD_2_00_INCH:  return 200;
+		case Size::EPD_2_71_INCH:  return 264;
+		default:  return -1;
+	}
+}
+
+
+int EpaperDriver::getBytesPerLine() const {
+	return getWidth() / 8;
+}
+
+
+int EpaperDriver::getHeight() const {
+	switch (size) {
+		case Size::EPD_1_44_INCH:  return  96;
+		case Size::EPD_2_00_INCH:  return  96;
+		case Size::EPD_2_71_INCH:  return 176;
+		default:  return -1;
+	}
+}
+
+
+
 /*---- Power methods ----*/
 
 Status EpaperDriver::powerOn() {

@@ -41,9 +41,9 @@ void loop() {
 	
 	// Render image to memory
 	std::memset(image, 0, sizeof(image));
-	for (int y = 0; y < 176; y++) {
-		for (int x = 0; x < 264; x++) {
-			int i = y * 264 + x;
+	for (int y = 0; y < epd.getHeight(); y++) {
+		for (int x = 0; x < epd.getWidth(); x++) {
+			int i = y * epd.getWidth() + x;
 			int c = (x / checkerSize + y / checkerSize) % 2;
 			image[i / 8] |= c << (i % 8);
 		}

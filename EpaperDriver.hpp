@@ -141,6 +141,24 @@ class EpaperDriver final {
 	
 	
 	
+	/*---- Image dimension methods ----*/
+	
+	// Returns the width of the image, in pixels. The value
+	// is in the range [8, 264] and is a multiple of 8.
+	public: int getWidth() const;
+	
+	
+	// Returns the number of bytes per line, which is the
+	// width divided by 8. The value is in the range [1, 33].
+	public: int getBytesPerLine() const;
+	
+	
+	// Returns the height of the image, in pixels. The value
+	// is in the range [8, 176] and is a multiple of 8.
+	public: int getHeight() const;
+	
+	
+	
 	/*---- Power methods ----*/
 	
 	// Powers on the G2 COG driver.
