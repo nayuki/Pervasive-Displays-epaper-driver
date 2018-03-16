@@ -300,6 +300,7 @@ void EpaperDriver::powerOff() {
 	spiWrite(0x03, 0x01);  // Latch reset turn on
 	spiWrite(0x05, 0x03);  // Power off charge pump, Vcom off
 	spiWrite(0x05, 0x01);  // Power off charge pump negative voltage, VGL & VDL off
+	delay(300);
 	spiWrite(0x04, 0x80);  // Discharge internal
 	spiWrite(0x05, 0x00);  // Power off charge pump positive voltage, VGH & VDH off
 	spiWrite(0x07, 0x01);  // Turn off osc
