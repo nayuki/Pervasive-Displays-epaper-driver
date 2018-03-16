@@ -22,6 +22,9 @@ using Status = EpaperDriver::Status;
 #endif
 
 
+
+/*---- Constructors ----*/
+
 EpaperDriver::EpaperDriver() :
 	EpaperDriver(nullptr) {}
 
@@ -29,6 +32,9 @@ EpaperDriver::EpaperDriver() :
 EpaperDriver::EpaperDriver(uint8_t prevPix[]) :
 	previousPixels(prevPix) {}
 
+
+
+/*---- Drawing control methods ----*/
 
 void EpaperDriver::setFrameRepeats(int iters) {
 	if (iters > 0)
@@ -54,6 +60,9 @@ void EpaperDriver::setFrameTimeByTemperature(int tmpr) {
 	else  frameRepeat = frameRepeat * 7 / 10;
 }
 
+
+
+/*---- Drawing methods ----*/
 
 void EpaperDriver::changeImage(const uint8_t pixels[]) {
 	changeImage(nullptr, pixels);
@@ -159,6 +168,9 @@ void EpaperDriver::drawLine(int row, const uint8_t pixels[], uint32_t mapWhiteTo
 	spiWrite(0x02, 0x07);  // Turn on OE: output data from COG driver to panel
 }
 
+
+
+/*---- Power methods ----*/
 
 Status EpaperDriver::powerOn() {
 	if (panelOnPin == -1 ||
@@ -294,6 +306,9 @@ void EpaperDriver::powerOff() {
 	digitalWrite(panelOnPin, LOW);
 }
 
+
+
+/*---- SPI methods ----*/
 
 void EpaperDriver::spiWrite(uint8_t cmdIndex, uint8_t cmdData) {
 	spiRawPair(0x70, cmdIndex);
