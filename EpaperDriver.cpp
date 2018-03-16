@@ -209,12 +209,12 @@ int EpaperDriver::getHeight() const {
 
 Status EpaperDriver::powerOn() {
 	// Check arguments and state
-	if (panelOnPin == -1 ||
-			chipSelectPin == -1 ||
-			resetPin == -1 ||
-			busyPin == -1 ||
-			(size == Size::EPD_2_71_INCH && borderControlPin == -1) ||
-			dischargePin == -1)
+	if (panelOnPin < 0 ||
+			chipSelectPin < 0 ||
+			resetPin < 0 ||
+			busyPin < 0 ||
+			(size == Size::EPD_2_71_INCH && borderControlPin < 0) ||
+			dischargePin < 0)
 		return Status::INVALID_PIN_CONFIG;
 	if (isOn)
 		return Status::ALREADY_ON;
