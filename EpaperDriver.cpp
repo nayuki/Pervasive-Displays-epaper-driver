@@ -221,21 +221,21 @@ Status EpaperDriver::powerOn() {
 	isOn = true;
 	
 	// Set I/O pin directions
-	pinMode(panelOnPin      , OUTPUT);
-	pinMode(chipSelectPin   , OUTPUT);
-	pinMode(resetPin        , OUTPUT);
-	pinMode(busyPin         , INPUT);
+	pinMode(panelOnPin   , OUTPUT);
+	pinMode(chipSelectPin, OUTPUT);
+	pinMode(resetPin     , OUTPUT);
+	pinMode(busyPin      , INPUT);
 	if (size == Size::EPD_2_71_INCH)
 		pinMode(borderControlPin, OUTPUT);
-	pinMode(dischargePin    , OUTPUT);
+	pinMode(dischargePin , OUTPUT);
 	
 	// Set initial pin values
-	digitalWrite(panelOnPin      , HIGH);
-	digitalWrite(chipSelectPin   , HIGH);
+	digitalWrite(panelOnPin   , HIGH);
+	digitalWrite(chipSelectPin, HIGH);
 	if (size == Size::EPD_2_71_INCH)
 		digitalWrite(borderControlPin, HIGH);
-	digitalWrite(resetPin        , HIGH);
-	digitalWrite(dischargePin    , LOW);
+	digitalWrite(resetPin     , HIGH);
+	digitalWrite(dischargePin , LOW);
 	delay(5);
 	
 	// Pulse the reset pin
