@@ -15,6 +15,9 @@ using std::uint8_t;
 using std::size_t;
 
 
+static const uint8_t DEMO_RULES[] = {30, 110, 22, 73, 75};
+
+
 static constexpr int MAX_WIDTH  = 264;
 static constexpr int MAX_HEIGHT = 176;
 
@@ -31,18 +34,19 @@ void setup() {
 	epd.busyPin = 8;
 	epd.chipSelectPin = 19;
 	
-	epd.setFrameTime(300);
+	epd.setFrameTime(500);
 	Serial.begin(9600);
 	delay(1000);
 }
 
 
 static uint8_t image[MAX_WIDTH * MAX_HEIGHT / 8];
-static int checkerSize = 1;
+static size_t ruleIndex = 0;
 
 void loop() {
-	Serial.print("checkerSize = ");
-	Serial.println(checkerSize);
+	uint8_t rule = DEMO_RULES[ruleIndex];
+	Serial.print("rule = ");
+	Serial.println(rule);
 	
 	// Scalar constants
 	int width = epd.getWidth();
@@ -53,17 +57,31 @@ void loop() {
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
 			size_t i = static_cast<size_t>(y) * static_cast<size_t>(width) + static_cast<size_t>(x);
-			int c = (x / checkerSize + y / checkerSize) % 2;
+			int c;
+			if (y == 0)
+				c = x == width * 2 / 3 ? 1 : 0;
+			else {  // y > 0
+				int context = 0;
+				size_t j = i - static_cast<size_t>(width) - 1;
+				if (x > 0)
+					context = (image[j / 8] >> (j % 8)) & 1;
+				context <<= 1;
+				j++;
+				context |= (image[j / 8] >> (j % 8)) & 1;
+				context <<= 1;
+				j++;
+				if (x < width - 1)
+					context |= (image[j / 8] >> (j % 8)) & 1;
+				c = (rule >> context) & 1;
+			}
 			image[i / 8] |= c << (i % 8);
 		}
 	}
 	
 	// Draw image to screen
 	epd.changeImage(image);
-	delay(3000);
+	delay(5000);
 	
 	// Change parameters for next iteration
-	checkerSize++;
-	if (checkerSize > 100)
-		checkerSize = 1;
+	ruleIndex = (ruleIndex + 1) % (sizeof(DEMO_RULES) / sizeof(DEMO_RULES[0]));
 }
