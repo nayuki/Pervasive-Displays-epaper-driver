@@ -62,17 +62,19 @@ void EpaperDriver::setFrameTimeByTemperature(int tmpr) {
 
 /*---- Drawing methods ----*/
 
-void EpaperDriver::changeImage(const uint8_t pixels[]) {
-	changeImage(nullptr, pixels);
+Status EpaperDriver::changeImage(const uint8_t pixels[]) {
+	return changeImage(nullptr, pixels);
 }
 
 
-void EpaperDriver::changeImage(const uint8_t prevPix[], const uint8_t pixels[]) {
+Status EpaperDriver::changeImage(const uint8_t prevPix[], const uint8_t pixels[]) {
 	if (prevPix == nullptr)
 		prevPix = previousPixels;
-	if (prevPix == nullptr)
-		return;
-	powerOn();
+	if (prevPix == nullptr || pixels == nullptr)
+		return Status::INVALID_ARGUMENT;
+	Status st = powerOn();
+	if (st != Status::OK)
+		return st;
 	
 	// Stage 1: Compensate
 	int iters;
@@ -88,7 +90,7 @@ void EpaperDriver::changeImage(const uint8_t prevPix[], const uint8_t pixels[]) 
 			iters++;
 		} while (millis() - startTime < static_cast<unsigned long>(frameRepeat));
 	} else
-		return;
+		return Status::INTERNAL_ERROR;
 	
 	drawFrame(prevPix, 2, 0, iters);  // Stage 2: White
 	drawFrame(pixels , 3, 0, iters);  // Stage 3: Inverse
@@ -97,6 +99,7 @@ void EpaperDriver::changeImage(const uint8_t prevPix[], const uint8_t pixels[]) 
 	if (previousPixels != nullptr)
 		std::memcpy(previousPixels, pixels, getBytesPerLine() * getHeight() * sizeof(pixels[0]));
 	powerOff();
+	return Status::OK;
 }
 
 

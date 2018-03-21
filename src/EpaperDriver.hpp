@@ -27,14 +27,16 @@ class EpaperDriver final {
 	};
 	
 	
-	// Return codes for powerOn().
+	// Return codes for various methods.
 	public: enum class Status {
+		INTERNAL_ERROR = 0,
 		OK,
 		INVALID_SIZE,
 		INVALID_PIN_CONFIG,
 		INVALID_CHIP_ID,
 		BROKEN_PANEL,
 		DC_FAIL,
+		INVALID_ARGUMENT,
 	};
 	
 	
@@ -98,7 +100,7 @@ class EpaperDriver final {
 	// Changes the displayed image from previousImage to the given image.
 	// The previousImage field must be non-null, and all the array elements
 	// must have initialized values.
-	public: void changeImage(const std::uint8_t pixels[]);
+	public: Status changeImage(const std::uint8_t pixels[]);
 	
 	
 	// Changes the displayed image from some previous image to the given image.
@@ -122,7 +124,7 @@ class EpaperDriver final {
 	//   In other words, pixel bits are packed into bytes in little endian,
 	//   and the 2D array is mapped into 1D in row-major order.
 	// - There are no padding/ignored/wasted bits. Every bit affects the visible image.
-	public: void changeImage(const std::uint8_t prevPix[], const std::uint8_t pixels[]);
+	public: Status changeImage(const std::uint8_t prevPix[], const std::uint8_t pixels[]);
 	
 	
 	// Draws the given image the given number of times, mapping white pixels
