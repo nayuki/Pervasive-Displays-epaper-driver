@@ -112,8 +112,6 @@ void EpaperDriver::drawFrame(const uint8_t pixels[],
 
 
 void EpaperDriver::drawLine(int row, const uint8_t pixels[], uint32_t mapWhiteTo, uint32_t mapBlackTo, uint8_t border) {
-	if (!isOn)
-		return;
 	spiRawPair(0x70, 0x0A);
 	digitalWrite(chipSelectPin, LOW);
 	SPI.transfer(0x72);
@@ -216,9 +214,6 @@ Status EpaperDriver::powerOn() {
 			(size == Size::EPD_2_71_INCH && borderControlPin < 0) ||
 			dischargePin < 0)
 		return Status::INVALID_PIN_CONFIG;
-	if (isOn)
-		return Status::ALREADY_ON;
-	isOn = true;
 	
 	// Set I/O pin directions
 	pinMode(panelOnPin   , OUTPUT);
@@ -338,9 +333,6 @@ void EpaperDriver::powerFinish() {
 
 
 void EpaperDriver::powerOff() {
-	if (!isOn)
-		return;
-	isOn = false;
 	powerFinish();
 	
 	spiWrite(0x0B, 0x00);  // Undocumented

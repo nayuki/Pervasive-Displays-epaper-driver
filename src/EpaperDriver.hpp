@@ -30,7 +30,6 @@ class EpaperDriver final {
 	// Return codes for powerOn().
 	public: enum class Status {
 		OK,
-		ALREADY_ON,
 		INVALID_SIZE,
 		INVALID_PIN_CONFIG,
 		INVALID_CHIP_ID,
@@ -59,9 +58,6 @@ class EpaperDriver final {
 	
 	// The size of the EPD being driven. Immutable.
 	private: Size size;
-	
-	// False initially, true after a successful powerOn(), false after powerOff().
-	private: bool isOn = false;
 	
 	// Controls how many times or for how long a frame of each stage
 	// is redrawn. Zero is invalid. Default value is a sane setting.
