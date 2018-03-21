@@ -98,7 +98,7 @@ Status EpaperDriver::changeImage(const uint8_t prevPix[], const uint8_t pixels[]
 	
 	if (previousPixels != nullptr)
 		std::memcpy(previousPixels, pixels, getBytesPerLine() * getHeight() * sizeof(pixels[0]));
-	powerOff();
+	powerFinish();
 	return Status::OK;
 }
 
@@ -332,12 +332,11 @@ void EpaperDriver::powerFinish() {
 		delay(100);
 		digitalWrite(borderControlPin, HIGH);
 	}
+	powerOff();
 }
 
 
 void EpaperDriver::powerOff() {
-	powerFinish();
-	
 	spiWrite(0x0B, 0x00);  // Undocumented
 	spiWrite(0x03, 0x01);  // Latch reset turn on
 	spiWrite(0x05, 0x03);  // Power off charge pump, Vcom off

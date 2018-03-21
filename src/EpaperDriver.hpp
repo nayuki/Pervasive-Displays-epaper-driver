@@ -168,7 +168,7 @@ class EpaperDriver final {
 	private: Status powerInit();
 	
 	
-	// Writes a nothing frame and dummy line.
+	// Writes a nothing frame and dummy line, followed by power-off.
 	private: void powerFinish();
 	
 	
