@@ -11,12 +11,28 @@
 /* 
  * A driver for Pervasive Displays' e-paper display (EPD) panels.
  * This allows a monochrome bitmap image to be drawn to the EPD.
+ * 
+ * Example usage pseudocode:
+ *   EpaperDriver epd(Size::EPD_2_71_INCH);
+ *   epd.panelOnPin = (...);
+ *   (... assign other pins ...)
+ *   epd.dischargePin = (...);
+ *   
+ *   // Memory must be initialized to avoid undefined behavior when reading
+ *   uint8_t prevImage[264 / 8 * 176] = {};
+ *   epd.previousPixels = prevImage;
+ *   
+ *   const uint8_t *image = (...);  // The image we want to draw
+ *   Status st = epd.changeImage(image);  // The main functionality
+ *   if (st != Status::OK)
+ *     print(st);  // Diagnostic info
  */
 class EpaperDriver final {
 	
 	/*---- Helper enums ----*/
 	
-	// Different EPD panel sizes, all of the Aurora Mb (V231) film type.
+	// Different EPD panel sizes, all of the Aurora Mb (V231) film type, with external timing controller (eTC).
+	// The Aurora Ma (V230) film type (eTC), as well as internal timing controller (iTC) panels, are not supported.
 	public: enum class Size {
 		// Reserve index 0 to avoid accidental use of
 		// uninitialized memory that happens to be zero
@@ -55,6 +71,7 @@ class EpaperDriver final {
 	public: int dischargePin     = -1;
 	
 	// Writable array for reading and writing the previous image. Can be null.
+	// If this is not null, then the memory must be initialized because it will be read.
 	public: std::uint8_t *previousPixels = nullptr;
 	
 	// The size of the EPD being driven. Immutable.
@@ -70,7 +87,7 @@ class EpaperDriver final {
 	
 	/*---- Constructor ----*/
 	
-	// Creates a driver with the given previous image array (can be null).
+	// Creates a driver with the given size and given previous image array (can be null).
 	// This constructor doesn't perform any I/O or modify hardware configuration.
 	public: EpaperDriver(Size sz, std::uint8_t prevPix[] = nullptr);
 	
@@ -79,12 +96,12 @@ class EpaperDriver final {
 	/*---- Drawing control methods ----*/
 	
 	// Sets the number of times that a frame of each stage is redrawn.
-	// The number of iterations must be positive, or else this method does nothing.
+	// The number of iterations must be positive, otherwise the value is invalid.
 	public: void setFrameRepeats(int iters);
 	
 	
 	// Sets the duration (in milliseconds) that a frame of each stage is redrawn.
-	// The time length must be positive, or else this method does nothing.
+	// The time length must be positive, otherwise the value is invalid.
 	public: void setFrameTime(int millis);
 	
 	
@@ -97,8 +114,8 @@ class EpaperDriver final {
 	/*---- Drawing methods ----*/
 	
 	// Changes the displayed image from previousImage to the given image.
-	// The previousImage field must be non-null, and all the array elements
-	// must have initialized values.
+	// The previousImage field must be non-null, and all elements of both
+	// arrays must have initialized values.
 	public: Status changeImage(const std::uint8_t pixels[]);
 	
 	
@@ -108,8 +125,8 @@ class EpaperDriver final {
 	// - Else if previousImage is not null,
 	//   then it is used as the previous image.
 	// - Otherwise with both prevPix and previousImage
-	//   being null, this method does nothing.
-	// What gets drawn to the screen is approximately a negative of the previous image,
+	//   being null, this method returns an error.
+	// What gets drawn to the screen is approximately: a negative of the previous image,
 	// then a negative of the given image, and finally a positive of the given image.
 	// If previousImage is not null (regardless of the value of prevPix), then the given
 	// image is copied to previousImage, which may be read on the next call to changeImage().
@@ -159,7 +176,7 @@ class EpaperDriver final {
 	
 	/*---- Power methods ----*/
 	
-	// Powers on the G2 COG driver.
+	// Powers on the G2 COG driver, followed by initialization.
 	private: Status powerOn();
 	
 	

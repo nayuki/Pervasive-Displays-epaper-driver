@@ -68,10 +68,13 @@ Status EpaperDriver::changeImage(const uint8_t pixels[]) {
 
 
 Status EpaperDriver::changeImage(const uint8_t prevPix[], const uint8_t pixels[]) {
+	// Handle arguments
 	if (prevPix == nullptr)
 		prevPix = previousPixels;
 	if (prevPix == nullptr || pixels == nullptr)
 		return Status::INVALID_ARGUMENT;
+	
+	// Power on the device
 	Status st = powerOn();
 	if (st != Status::OK)
 		return st;
@@ -79,7 +82,7 @@ Status EpaperDriver::changeImage(const uint8_t prevPix[], const uint8_t pixels[]
 	// Stage 1: Compensate
 	int iters;
 	if (frameRepeat < 0) {  // Known number of iterations
-		iters = -frameRepeat;
+		iters = -frameRepeat;  // Won't overflow
 		drawFrame(prevPix, 3, 2, iters);
 	} else if (frameRepeat > 0) {
 		// Measure number of iterations needed to spend 'frameRepeat' milliseconds
@@ -96,8 +99,11 @@ Status EpaperDriver::changeImage(const uint8_t prevPix[], const uint8_t pixels[]
 	drawFrame(pixels , 3, 0, iters);  // Stage 3: Inverse
 	drawFrame(pixels , 2, 3, iters);  // Stage 4: Normal
 	
+	// Save current image into previous
 	if (previousPixels != nullptr)
 		std::memcpy(previousPixels, pixels, getBytesPerLine() * getHeight() * sizeof(pixels[0]));
+	
+	// Power off the device
 	powerFinish();
 	return Status::OK;
 }
@@ -185,7 +191,7 @@ int EpaperDriver::getWidth() const {
 		case Size::EPD_1_44_INCH:  return 128;
 		case Size::EPD_2_00_INCH:  return 200;
 		case Size::EPD_2_71_INCH:  return 264;
-		default:  return -1;
+		default:  return -1;  // Illegal argument
 	}
 }
 
@@ -200,7 +206,7 @@ int EpaperDriver::getHeight() const {
 		case Size::EPD_1_44_INCH:  return  96;
 		case Size::EPD_2_00_INCH:  return  96;
 		case Size::EPD_2_71_INCH:  return 176;
-		default:  return -1;
+		default:  return -1;  // Illegal argument
 	}
 }
 
@@ -308,7 +314,7 @@ Status EpaperDriver::powerInit() {
 		delay(40);
 		if ((spiRead(0x0F) & 0x40) != 0) {  // Check DC/DC
 			spiWrite(0x02, 0x06);  // Output enable to disable
-			return Status::OK;
+			return Status::OK;  // Success
 		}
 	}
 	powerOff();
