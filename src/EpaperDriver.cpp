@@ -284,7 +284,7 @@ Status EpaperDriver::powerInit() {
 		case Size::EPD_1_44_INCH:  chanSel = chanSel144;  break;
 		case Size::EPD_2_00_INCH:  chanSel = chanSel200;  break;
 		case Size::EPD_2_71_INCH:  chanSel = chanSel271;  break;
-		default:  return Status::INVALID_SIZE;
+		default:  return Status::INTERNAL_ERROR;
 	}
 	for (int i = 0; i < 8; i++)
 		SPI.transfer(chanSel[i]);

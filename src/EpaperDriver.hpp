@@ -31,7 +31,6 @@ class EpaperDriver final {
 	public: enum class Status {
 		INTERNAL_ERROR = 0,
 		OK,
-		INVALID_SIZE,
 		INVALID_PIN_CONFIG,
 		INVALID_CHIP_ID,
 		BROKEN_PANEL,
