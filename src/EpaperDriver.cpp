@@ -120,7 +120,8 @@ void EpaperDriver::drawFrame(const uint8_t pixels[],
 }
 
 
-void EpaperDriver::drawLine(int row, const uint8_t pixels[], uint32_t mapWhiteTo, uint32_t mapBlackTo, uint8_t border) {
+void EpaperDriver::drawLine(int row, const uint8_t pixels[],
+		uint32_t mapWhiteTo, uint32_t mapBlackTo, uint8_t border) {
 	spiRawPair(0x70, 0x0A);
 	digitalWrite(chipSelectPin, LOW);
 	SPI.transfer(0x72);

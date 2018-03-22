@@ -145,14 +145,16 @@ class EpaperDriver final {
 	
 	// Draws the given image the given number of times, mapping white pixels
 	// to the given 2-bit value and black pixels to the given 2-bit value.
-	private: void drawFrame(const std::uint8_t pixels[], std::uint32_t mapWhiteTo, std::uint32_t mapBlackTo, int iterations);
+	private: void drawFrame(const std::uint8_t pixels[],
+		std::uint32_t mapWhiteTo, std::uint32_t mapBlackTo, int iterations);
 	
 	
 	// Draws the given line of pixels to the given row number, mapping white pixels
 	// to the given 2-bit value and black pixels to the given 2-bit value.
 	// Either 0 <= row < height to draw to a normal row,
 	// or row = -4 to deactivate all the row selector bytes.
-	private: void drawLine(int row, const std::uint8_t pixels[], std::uint32_t mapWhiteTo, std::uint32_t mapBlackTo, std::uint8_t border);
+	private: void drawLine(int row, const std::uint8_t pixels[],
+		std::uint32_t mapWhiteTo, std::uint32_t mapBlackTo, std::uint8_t border);
 	
 	
 	
