@@ -113,19 +113,18 @@ class EpaperDriver final {
 	
 	/*---- Drawing methods ----*/
 	
-	// Changes the displayed image from previousImage to the given image.
-	// The previousImage field must be non-null, and all elements of both
-	// arrays must have initialized values.
-	public: Status changeImage(const std::uint8_t pixels[]);
-	
-	
 	// Changes the displayed image from some previous image to the given image.
-	// - If prevPix is not null, then it is used as
-	//   the previous image (only read, not written).
-	// - Else if previousImage is not null,
+	// - If the argument prevPix is not null, then it is used
+	//   as the previous image (only read, not written).
+	// - Else if the field previousImage is not null,
 	//   then it is used as the previous image.
 	// - Otherwise with both prevPix and previousImage
 	//   being null, this method returns an error.
+	// 
+	// All elements of both the previous and current image arrays must have initialized values,
+	// because the arrays will be read. (For example, it is unacceptable to allocate the previous
+	// image array on the stack or with malloc(), without setting a value on each element.)
+	// 
 	// What gets drawn to the screen is approximately: a negative of the previous image,
 	// then a negative of the given image, and finally a positive of the given image.
 	// If previousImage is not null (regardless of the value of prevPix), then the given
@@ -140,7 +139,7 @@ class EpaperDriver final {
 	//   In other words, pixel bits are packed into bytes in little endian,
 	//   and the 2D array is mapped into 1D in row-major order.
 	// - There are no padding/ignored/wasted bits. Every bit affects the visible image.
-	public: Status changeImage(const std::uint8_t prevPix[], const std::uint8_t pixels[]);
+	public: Status changeImage(const std::uint8_t pixels[], const std::uint8_t prevPix[] = nullptr);
 	
 	
 	// Draws the given image the given number of times, mapping white pixels

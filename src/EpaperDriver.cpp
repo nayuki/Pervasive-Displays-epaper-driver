@@ -62,12 +62,7 @@ void EpaperDriver::setFrameTimeByTemperature(int tmpr) {
 
 /*---- Drawing methods ----*/
 
-Status EpaperDriver::changeImage(const uint8_t pixels[]) {
-	return changeImage(nullptr, pixels);
-}
-
-
-Status EpaperDriver::changeImage(const uint8_t prevPix[], const uint8_t pixels[]) {
+Status EpaperDriver::changeImage(const uint8_t pixels[], const uint8_t prevPix[]) {
 	// Handle arguments
 	if (prevPix == nullptr)
 		prevPix = previousPixels;
