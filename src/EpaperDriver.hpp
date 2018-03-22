@@ -89,7 +89,7 @@ class EpaperDriver final {
 	
 	// Creates a driver with the given size and given previous image array (can be null).
 	// This constructor doesn't perform any I/O or modify hardware configuration.
-	public: EpaperDriver(Size sz, std::uint8_t prevPix[] = nullptr);
+	public: explicit EpaperDriver(Size sz, std::uint8_t prevPix[] = nullptr);
 	
 	
 	
