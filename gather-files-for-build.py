@@ -8,7 +8,7 @@
 # set to the script's directory. For Python 2 and 3.
 # 
 # Copyright (c) Project Nayuki
-# https://www.nayuki.io/
+# https://www.nayuki.io/page/pervasive-displays-epaper-panel-hardware-driver
 # 
 
 import os, re, sys
