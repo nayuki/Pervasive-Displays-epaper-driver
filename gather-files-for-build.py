@@ -7,7 +7,7 @@
 # Run with no arguments, with the current working directory
 # set to the script's directory. For Python 2 and 3.
 # 
-# Copyright (c) Project Nayuki
+# Copyright (c) Project Nayuki. (MIT License)
 # https://www.nayuki.io/page/pervasive-displays-epaper-panel-hardware-driver
 # 
 
