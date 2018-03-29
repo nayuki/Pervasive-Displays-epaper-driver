@@ -38,14 +38,26 @@ static uint8_t prevImage[MAX_WIDTH * MAX_HEIGHT / 8] = {};
 static EpaperDriver epd(EpaperDriver::Size::EPD_2_71_INCH, prevImage);
 
 void setup() {
-	// Configure pins for the "Texas Instruments SimpleLink
-	// MSP-EXP432P401R LaunchPad" (a.k.a. TI MSP432) microcontroller
-	epd.panelOnPin = 11;
-	epd.borderControlPin = 13;
-	epd.dischargePin = 12;
-	epd.resetPin = 10;
-	epd.busyPin = 8;
-	epd.chipSelectPin = 19;
+	// Configure pins for your microcontroller
+	#if defined(CORE_TEENSY)
+		// PJRC Teensy 3.x
+		epd.panelOnPin = 3;
+		epd.borderControlPin = 1;
+		epd.dischargePin = 2;
+		epd.resetPin = 22;
+		epd.busyPin = 23;
+		epd.chipSelectPin = 0;
+	#elif defined(__MSP432P401R__)
+		// "Texas Instruments SimpleLink MSP-EXP432P401R LaunchPad" (a.k.a. TI MSP432)
+		epd.panelOnPin = 11;
+		epd.borderControlPin = 13;
+		epd.dischargePin = 12;
+		epd.resetPin = 10;
+		epd.busyPin = 8;
+		epd.chipSelectPin = 19;
+	#else
+		#error "Define your pin mapping here"
+	#endif
 	
 	epd.setFrameTime(800);
 	Serial.begin(9600);
