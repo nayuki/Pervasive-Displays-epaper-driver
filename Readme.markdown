@@ -61,6 +61,7 @@ Hardware support
 These combinations of hardware are tested to work:
 
 * Microcontrollers:
+  [PJRC Teensy](https://www.pjrc.com/teensy/index.html) 3.1, 3.2, 3.6;
   [Texas Instruments SimpleLink MSP-EXP432P401R LaunchPad Development Kit (MSP432)](http://www.ti.com/tool/MSP-EXP432P401R).
 
 * Driver boards:
