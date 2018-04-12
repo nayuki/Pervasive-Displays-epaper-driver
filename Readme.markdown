@@ -65,7 +65,8 @@ These combinations of hardware are tested to work:
   [Texas Instruments SimpleLink MSP-EXP432P401R LaunchPad Development Kit (MSP432)](http://www.ti.com/tool/MSP-EXP432P401R).
 
 * Driver boards:
-  [Pervasive Displays EPD Extension Kit Gen 2 (EXT2) (B3000MS034)](http://www.pervasivedisplays.com/kits/ext2_kit).
+  [Pervasive Displays EPD Extension Kit Gen 2 (EXT2) (B3000MS034)](http://www.pervasivedisplays.com/kits/ext2_kit),
+  [RePaper EPD Extension Board](https://web.archive.org/web/20161214070359/http://repaper.org/doc/extension_board.html).
 
 * E-paper panels - Pervasive Displays, Aurora Mb film (V231), second generation chip-on-glass (G2 COG), external timing controller (eTC):
   [1.44-inch (128×96) (E2144CS021)](http://www.pervasivedisplays.com/products/144),
