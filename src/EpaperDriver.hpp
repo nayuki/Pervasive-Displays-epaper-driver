@@ -141,8 +141,8 @@ class EpaperDriver final {
 	// because the arrays will be read. (For example, it is unacceptable to allocate the previous
 	// image array on the stack or with malloc(), without setting a value on each element.)
 	// 
-	// What gets drawn to the screen is approximately: a negative of the previous image,
-	// then a negative of the given image, and finally a positive of the given image.
+	// Four images are drawn to the screen in sequence: the negative of the previous image, an all-
+	// white screen, the negative of the given image, and finally the positive of the given image.
 	// If previousImage is not null (regardless of the value of prevPix), then the given
 	// image is copied to previousImage, which may be read on the next call to changeImage().
 	// 
