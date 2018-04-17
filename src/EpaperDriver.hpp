@@ -158,6 +158,14 @@ class EpaperDriver final {
 	public: Status changeImage(const std::uint8_t pixels[], const std::uint8_t prevPix[] = nullptr);
 	
 	
+	// Changes the displayed image much like changeImage(), but performs fewer drawing cycles.
+	// The arguments are treated in the same way, and the previousImage array (if not null) is updated.
+	// This method updates exactly the pixels on screen where the given image differs from the previous image,
+	// and doesn't make the whole screen flicker. But image quality may be degraded around the edges
+	// of changed pixels, so it's a good idea to use changeImage() periodically for a clean redraw.
+	public: Status updateImage(const std::uint8_t pixels[], const std::uint8_t prevPix[] = nullptr);
+	
+	
 	// Draws the given image the given number of times, mapping white pixels
 	// to the given 2-bit value and black pixels to the given 2-bit value.
 	private: void drawFrame(const std::uint8_t pixels[],
@@ -170,6 +178,14 @@ class EpaperDriver final {
 	// or row = -4 to deactivate all the row selector bytes.
 	private: void drawLine(int row, const std::uint8_t pixels[],
 		std::uint32_t mapWhiteTo, std::uint32_t mapBlackTo, std::uint8_t border);
+	
+	
+	// Draws the given line of differential pixels to the given row number.
+	// For each column, if the pixel value in 'pixels' differs from that in 'prevPix',
+	// then the pixel value in 'pixels' is drawn, otherwise a nothing value is drawn.
+	// It is necessary to draw nothing on unchanged pixels because overdriving
+	// the pixels with the same value can cause image degradation.
+	private: void updateLine(int row, const std::uint8_t prevPix[], const std::uint8_t pixels[]);
 	
 	
 	

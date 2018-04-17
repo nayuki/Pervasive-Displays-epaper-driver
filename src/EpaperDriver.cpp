@@ -120,6 +120,45 @@ Status EpaperDriver::changeImage(const uint8_t pixels[], const uint8_t prevPix[]
 }
 
 
+Status EpaperDriver::updateImage(const uint8_t pixels[], const uint8_t prevPix[]) {
+	// Handle arguments
+	if (prevPix == nullptr)
+		prevPix = previousPixels;
+	if (prevPix == nullptr || pixels == nullptr)
+		return Status::INVALID_ARGUMENT;
+	
+	// Power on the device
+	Status st = powerOn();
+	if (st != Status::OK)
+		return st;
+	
+	// Loop based on iterations or time
+	int bytesPerLine = getBytesPerLine();
+	int height = getHeight();
+	if (frameRepeat < 0) {
+		for (int i = 0; i < -frameRepeat; i++) {  // Won't overflow
+			for (int y = 0; y < height; y++)
+				updateLine(y, &prevPix[y * bytesPerLine], &pixels[y * bytesPerLine]);
+		}
+	} else if (frameRepeat > 0) {
+		unsigned long startTime = millis();
+		do {
+			for (int y = 0; y < height; y++)
+				updateLine(y, &prevPix[y * bytesPerLine], &pixels[y * bytesPerLine]);
+		} while (millis() - startTime < static_cast<unsigned long>(frameRepeat));
+	} else
+		return Status::INTERNAL_ERROR;
+	
+	// Save current image into previous
+	if (previousPixels != nullptr)
+		std::memcpy(previousPixels, pixels, getBytesPerLine() * getHeight() * sizeof(pixels[0]));
+	
+	// Power off the device
+	powerFinish();
+	return Status::OK;
+}
+
+
 void EpaperDriver::drawFrame(const uint8_t pixels[],
 		uint32_t mapWhiteTo, uint32_t mapBlackTo, int iterations) {
 	int bytesPerLine = getBytesPerLine();
@@ -190,6 +229,47 @@ void EpaperDriver::drawLine(int row, const uint8_t pixels[],
 	#undef DO_MAP
 	if (size == Size::EPD_1_44_INCH)
 		SPI.transfer(border);
+	digitalWrite(chipSelectPin, HIGH);
+	spiWrite(0x02, 0x07);  // Turn on OE: output data from COG driver to panel
+}
+
+
+void EpaperDriver::updateLine(int row, const uint8_t prevPix[], const uint8_t pixels[]) {
+	spiRawPair(0x70, 0x0A);
+	digitalWrite(chipSelectPin, LOW);
+	SPI.transfer(0x72);
+	if (size == Size::EPD_2_00_INCH || size == Size::EPD_2_71_INCH)
+		SPI.transfer(0x00);
+	int bytesPerLine = getBytesPerLine();
+	
+	// Send even pixels
+	for (int x = bytesPerLine - 1; x >= 0; x--) {
+		uint8_t a = prevPix[x];
+		uint8_t b = pixels[x];
+		uint8_t c = (((a ^ b) & 0x55) << 1) | (b & 0x55);
+		SPI.transfer(c);
+	}
+	
+	// Send the scan bytes
+	for (int y = getHeight() / 4 - 1; y >= 0; y--) {
+		if (y == row / 4)
+			SPI.transfer(3 << (row % 4 * 2));
+		else
+			SPI.transfer(0x00);
+	}
+	
+	// Send odd pixels
+	for (int x = 0; x < bytesPerLine; x++) {
+		uint8_t a = prevPix[x];
+		uint8_t b = pixels[x];
+		uint8_t c = ((a ^ b) & 0xAA) | ((b & 0xAA) >> 1);
+		c = ((c & 0x33) << 2) | ((c >> 2) & 0x33);
+		c = ((c & 0x0F) << 4) | ((c >> 4) & 0x0F);
+		SPI.transfer(c);
+	}
+	
+	if (size == Size::EPD_1_44_INCH)
+		SPI.transfer(0x00);
 	digitalWrite(chipSelectPin, HIGH);
 	spiWrite(0x02, 0x07);  // Turn on OE: output data from COG driver to panel
 }
