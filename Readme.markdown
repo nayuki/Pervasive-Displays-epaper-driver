@@ -14,7 +14,7 @@ To build one example program (e.g. example/foo/foo.ino), copy every library sour
 
 For convenience, a Python script (gather-files-for-build.py) is provided which performs all the preprocessing steps for a build. It creates a new "build" directory, copies all the examples there, copies the library code into each example, renames .hpp files to .h, and patches the file names in `#include` directives.
 
-Example usage pseudocode:
+### Usage pseudocode
 
     #include <cstdint>
     #include "EpaperDriver.hpp"
@@ -40,6 +40,7 @@ Software features
 Supported features:
 
 * Drawing a full image from a pointer to a raster bitmap array (in RAM or flash).
+* Changing precisely the pixels that differ from one full image to the next (fast partial update), without clearing and redrawing all pixels.
 * Automatically saving the image and painting the negative previous image.
 * Specifying the frame draw repeat behavior by number of iterations, time duration, or temperature.
 * Specifying arbitrary pin assignments for input and output signal lines.
@@ -50,7 +51,7 @@ Supported features:
 Unsupported features:
 
 * Keeping the device on after an image is drawn (reduces latency).
-* Painting individual lines / partial screen updates (reduces drawing time).
+* Painting individual lines, in arbitrary order, without necessarily painting the entire screen.
 * Low-level drawing control for pixel polarity, unequal number of frame repeats, border byte, etc.
 * Reading `PROGMEM` data using special functions (for microcontrollers that can't use ordinary pointers to read constant data).
 
