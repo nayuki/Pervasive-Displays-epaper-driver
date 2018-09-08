@@ -44,7 +44,8 @@ using Status = EpaperDriver::Status;
 
 EpaperDriver::EpaperDriver(Size sz, uint8_t prevPix[]) :
 	previousPixels(prevPix),
-	size(sz) {}
+	size(sz),
+	frameRepeat(500) {}
 
 
 

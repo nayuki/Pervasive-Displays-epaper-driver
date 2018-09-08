@@ -97,7 +97,7 @@ class EpaperDriver final {
 	// is redrawn. Zero is invalid. Default value is a sane setting.
 	// Positive value indicates the number of milliseconds.
 	// Negative value indicates the number of repetitions.
-	private: int frameRepeat = 500;
+	private: int frameRepeat;
 	
 	
 	
