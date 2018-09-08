@@ -49,13 +49,13 @@ EpaperDriver::EpaperDriver(Size sz, uint8_t prevPix[]) :
 
 /*---- Drawing control methods ----*/
 
-void EpaperDriver::setFrameRepeats(int iters) {
+void EpaperDriver::setFrameRepeats(short iters) {
 	if (iters > 0)
 		frameRepeat = -iters;
 }
 
 
-void EpaperDriver::setFrameTime(int millis) {
+void EpaperDriver::setFrameTime(short millis) {
 	if (millis > 0)
 		frameRepeat = millis;
 }

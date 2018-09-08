@@ -97,7 +97,7 @@ class EpaperDriver final {
 	// is redrawn. Zero is invalid. Default value is a sane setting.
 	// Positive value indicates the number of milliseconds.
 	// Negative value indicates the number of repetitions.
-	private: int frameRepeat;
+	private: short frameRepeat;
 	
 	
 	
@@ -113,12 +113,12 @@ class EpaperDriver final {
 	
 	// Sets the number of times that a frame of each stage is redrawn.
 	// The number of iterations must be positive, otherwise the value is invalid.
-	public: void setFrameRepeats(int iters);
+	public: void setFrameRepeats(short iters);
 	
 	
 	// Sets the duration (in milliseconds) that a frame of each stage is redrawn.
 	// The time length must be positive, otherwise the value is invalid.
-	public: void setFrameTime(int millis);
+	public: void setFrameTime(short millis);
 	
 	
 	// Sets the frame redraw behavior based on temperature (in degrees Celsius), based
