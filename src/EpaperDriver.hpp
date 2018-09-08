@@ -90,8 +90,8 @@ class EpaperDriver final {
 	// If this is not null, then the memory must be initialized because it will be read.
 	public: std::uint8_t *previousPixels = nullptr;
 	
-	// The size of the EPD being driven. Immutable.
-	private: Size size;
+	// The size of the EPD being driven.
+	public: Size size;
 	
 	// Controls how many times or for how long a frame of each stage
 	// is redrawn. Zero is invalid. Default value is a sane setting.
@@ -105,7 +105,7 @@ class EpaperDriver final {
 	
 	// Creates a driver with the given size and given previous image array (can be null).
 	// This constructor doesn't perform any I/O or modify hardware configuration.
-	public: explicit EpaperDriver(Size sz, std::uint8_t prevPix[] = nullptr);
+	public: explicit EpaperDriver(Size sz = Size::INVALID, std::uint8_t prevPix[] = nullptr);
 	
 	
 	
