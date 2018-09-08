@@ -49,7 +49,7 @@ class EpaperDriver final {
 	
 	// Different EPD panel sizes, all of the Aurora Mb (V231) film type, with external timing controller (eTC).
 	// The Aurora Ma (V230) film type (eTC), as well as internal timing controller (iTC) panels, are not supported.
-	public: enum class Size {
+	public: enum class Size : unsigned char {
 		// Reserve index 0 to avoid accidental use of
 		// uninitialized memory that happens to be zero
 		INVALID = 0,
@@ -60,7 +60,7 @@ class EpaperDriver final {
 	
 	
 	// Return codes for various methods.
-	public: enum class Status {
+	public: enum class Status : unsigned char {
 		INTERNAL_ERROR = 0,
 		OK,
 		INVALID_PIN_CONFIG,
@@ -79,12 +79,12 @@ class EpaperDriver final {
 	// between the microcontroller and the EPD hardware. Also, it is implied
 	// that the microcontroller's default pins for SPI clock, MOSI, and MISO
 	// must be connected to the EPD hardware.
-	public: int panelOnPin       = -1;
-	public: int chipSelectPin    = -1;
-	public: int resetPin         = -1;
-	public: int busyPin          = -1;  // Required for size EPD_2_71_INCH, ignored otherwise
-	public: int borderControlPin = -1;
-	public: int dischargePin     = -1;
+	public: signed char panelOnPin       = -1;
+	public: signed char chipSelectPin    = -1;
+	public: signed char resetPin         = -1;
+	public: signed char busyPin          = -1;  // Required for size EPD_2_71_INCH, ignored otherwise
+	public: signed char borderControlPin = -1;
+	public: signed char dischargePin     = -1;
 	
 	// Writable array for reading and writing the previous image. Can be null.
 	// If this is not null, then the memory must be initialized because it will be read.
