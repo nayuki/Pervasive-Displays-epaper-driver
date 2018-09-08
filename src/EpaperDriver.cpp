@@ -181,8 +181,8 @@ void EpaperDriver::drawLine(int row, const uint8_t pixels[],
 	// 'mapping' is a 3-bit to 4-bit look-up table. It has 8 entries of 4 bits each, thus it is 32 bits wide.
 	// 'input' is any integer value, but only bits 0 and 2 are examined (i.e. masked with 0b101).
 	// The 4-bit aligned block in mapping that is returned depends on the value of (input & 5).
-	// If (input & 5) == 0b000, then bits 0 to 3 (inclusive) in mapping are returned.
-	// If (input & 5) == 0b001, then bits 4 to 7 (inclusive) in mapping are returned.
+	// If (input & 5) == 0b000, then bits  0 to  3 (inclusive) in mapping are returned.
+	// If (input & 5) == 0b001, then bits  4 to  7 (inclusive) in mapping are returned.
 	// If (input & 5) == 0b100, then bits 16 to 19 (inclusive) in mapping are returned.
 	// If (input & 5) == 0b101, then bits 20 to 23 (inclusive) in mapping are returned.
 	// The other 16 bits in mapping have no effect on the output, regardless of the input value.
