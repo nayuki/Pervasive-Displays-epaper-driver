@@ -32,9 +32,7 @@ using Size = EpaperDriver::Size;
 using Status = EpaperDriver::Status;
 
 
-#ifdef __MSP432P401R__
-	#define __MSP432P401R__ true
-#else
+#ifndef __MSP432P401R__
 	#define __MSP432P401R__ false
 #endif
 
@@ -354,7 +352,7 @@ Status EpaperDriver::powerInit() {
 	SPI.setBitOrder(MSBFIRST);
 	SPI.setClockDivider(SPI_CLOCK_DIV2);
 	if (__MSP432P401R__)
-		SPI.setDataMode(SPI_MODE1);
+		SPI.setDataMode(SPI_MODE1);  // Workaround for off-spec behavior
 	else
 		SPI.setDataMode(SPI_MODE0);
 	
