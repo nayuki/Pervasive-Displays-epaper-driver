@@ -33,8 +33,8 @@ public final class BitmapToCppArray {
 	
 	public static void main(String[] args) throws IOException {
 		if (args.length != 3) {
-			System.err.println("Usage: java BmpToCppArray InputImage.bmp/png OutputVariableName OutputCode.hpp");
-			System.err.println("Example: java BmpToCppArray Image0.png img0 image0.hpp");
+			System.err.println("Usage: java BitmapToCppArray InputImage.bmp/png OutputVariableName OutputCode.hpp");
+			System.err.println("Example: java BitmapToCppArray Image0.png img0 image0.hpp");
 			System.exit(1);
 			return;
 		}
