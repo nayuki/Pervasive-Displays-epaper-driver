@@ -6,7 +6,7 @@ Introduction
 
 This project contains the following C++ code by Nayuki:
 
-* A library for controlling e-paper panels manufactured by Pervasive Displays. The hardware driver logic is based on knowledge from Pervasive Displays' [document](http://www.pervasivedisplays.com/_literature_220873/COG_Driver_Interface_Timing_for_small_size_G2_V231).
+* A library for controlling e-paper panels manufactured by Pervasive Displays. The hardware driver logic is based on knowledge from Pervasive Displays' [document](https://www.pervasivedisplays.com/wp-content/uploads/2019/06/4P018-00_03_G2_AuroraMb_COG_Driver_Interface_Timing_for_smallsize_20150727.pdf).
 
 * Demo programs (Arduino sketches) to illustrate how the library is used. This set includes different genres of artwork (text, photo, gradient, etc.). The majority of the logic in these programs are not specifically tied to e-paper hardware.
 
@@ -63,16 +63,16 @@ These combinations of hardware are tested to work:
 
 * Microcontrollers:
   [PJRC Teensy](https://www.pjrc.com/teensy/index.html) 3.1, 3.2, 3.6;
-  [Texas Instruments SimpleLink MSP-EXP432P401R LaunchPad Development Kit (MSP432)](http://www.ti.com/tool/MSP-EXP432P401R).
+  [Texas Instruments SimpleLink MSP-EXP432P401R LaunchPad Development Kit (MSP432)](https://www.ti.com/tool/MSP-EXP432P401R).
 
 * Driver boards:
-  [Pervasive Displays EPD Extension Kit Gen 2 (EXT2) (B3000MS034)](http://www.pervasivedisplays.com/kits/ext2_kit),
+  [Pervasive Displays EPD Extension Kit Gen 2 (EXT2) (B3000MS034)](https://www.pervasivedisplays.com/product/epd-extension-kit-gen-2-ext2/),
   [RePaper EPD Extension Board](https://web.archive.org/web/20161214070359/http://repaper.org/doc/extension_board.html).
 
 * E-paper panels - Pervasive Displays, Aurora Mb film (V231), second generation chip-on-glass (G2 COG), external timing controller (eTC):
-  [1.44-inch (128×96) (E2144CS021)](http://www.pervasivedisplays.com/products/144),
-  [2.00-inch (200×96) (E2200CS021)](http://www.pervasivedisplays.com/products/200),
-  [2.71-inch (264×176) (E2271CS021)](http://www.pervasivedisplays.com/products/271).
+  [1.44-inch (128×96) (E2144CS021)](https://www.pervasivedisplays.com/product/1-44-e-ink-display/),
+  [2.00-inch (200×96) (E2200CS021)](https://www.pervasivedisplays.com/product/2-0-e-ink-display/),
+  [2.71-inch (264×176) (E2271CS021)](https://www.pervasivedisplays.com/product/2-71-e-ink-display/).
 
 Unsupported hardware:
 
@@ -91,7 +91,7 @@ Unsupported hardware:
 License
 -------
 
-Copyright © 2018 Project Nayuki. (MIT License)  
+Copyright © 2020 Project Nayuki. (MIT License)  
 https://www.nayuki.io/page/pervasive-displays-epaper-panel-hardware-driver
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
